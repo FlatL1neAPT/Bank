@@ -1,5 +1,5 @@
 from DataBase.DBController import DBController
-
+from DataBase.Region import Region
 
 class Bank:
 
@@ -19,8 +19,36 @@ class Bank:
 
         controller.save_changes()
 
-    def __init__(self, db_key):
-        pass
+    def __init__(self, rec):
+        self.rec = rec
+        self.controller = DBController()
+        self.cur = self.controller.get_cursor()
+
+        self.cur.execute("""SELECT Region.* 
+                            FROM Region 
+                            INNER JOIN Bank_Region ON Bank_Region.Region = Region.ID
+                            WHERE Bank_Region.Bank = %s;""", (self.rec["ID"],))
+
+        region_list = self.cur.fetchall()
+        self.regions = []
+
+        for region_rec in region_list:
+            self.regions.append(Region(region_rec))
+
+    def name(self):
+        return self.rec["Name"]
+
+    def id(self):
+        return self.rec["ID"]
+
+    def is_region_allow(self, address):
+
+        for region in self.regions:
+            if region.address_in_region(address):
+                return True
+
+        return False
+
 
 if __name__ == "__main__":
     Bank.create("Тинькофф")
