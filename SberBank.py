@@ -130,45 +130,46 @@ class SberBank(Bank):
                    ''.join(random.choices(string.ascii_uppercase + string.digits, k=16)).lower()
 
         body = "--" + boundary + "\r\n"
-        body += """Content-Disposition: form-data; name="[data][merchant_branch_id]"\r\n{}\r\n""".format(office["id"])
+        body += """Content-Disposition: form-data; name="[data][merchant_branch_id]"\r\n\r\n{}\r\n""".\
+            format(office["id"])
 
         body += "--" + boundary + "\r\n"
-        body += """Content-Disposition: form-data; name="[data][merchant_branch_city_id]"\r\n{}\r\n""".\
+        body += """Content-Disposition: form-data; name="[data][merchant_branch_city_id]"\r\n\r\n{}\r\n""".\
             format(city["id"])
 
         body += "--" + boundary + "\r\n"
-        body += """Content-Disposition: form-data; name="[data][vat_number]"\r\n{}\r\n""".format(org["ИНН"])
+        body += """Content-Disposition: form-data; name="[data][vat_number]"\r\n\r\n{}\r\n""".format(org["ИНН"])
 
         body += "--" + boundary + "\r\n"
-        body += """Content-Disposition: form-data; name="[data][company_name]"\r\n{}\r\n""".format(org["Название"])
+        body += """Content-Disposition: form-data; name="[data][company_name]"\r\n\r\n{}\r\n""".format(org["Название"])
 
         body += "--" + boundary + "\r\n"
-        body += """Content-Disposition: form-data; name="[data][last_name]"\r\n{}\r\n""".format(org["Фамилия"])
+        body += """Content-Disposition: form-data; name="[data][last_name]"\r\n\r\n{}\r\n""".format(org["Фамилия"])
 
         body += "--" + boundary + "\r\n"
-        body += """Content-Disposition: form-data; name="[data][first_name]"\r\n{}\r\n""".format(org["Имя"])
+        body += """Content-Disposition: form-data; name="[data][first_name]"\r\n\r\n{}\r\n""".format(org["Имя"])
 
         body += "--" + boundary + "\r\n"
-        body += """Content-Disposition: form-data; name="[data][middle_name]"\r\n{}\r\n""".format(org["Отчество"])
+        body += """Content-Disposition: form-data; name="[data][middle_name]"\r\n\r\n{}\r\n""".format(org["Отчество"])
 
         body += "--" + boundary + "\r\n"
-        body += """Content-Disposition: form-data; name="[data][email]"\r\n\r\n"""
+        body += """Content-Disposition: form-data; name="[data][email]"\r\n\r\n\r\n"""
 
         body += "--" + boundary + "\r\n"
-        body += """Content-Disposition: form-data; name="[data][mobile_phone]"\r\n{}\r\n""".format(org["Телефон"])
+        body += """Content-Disposition: form-data; name="[data][mobile_phone]"\r\n\r\n{}\r\n""".format(org["Телефон"])
 
         body += "--" + boundary + "\r\n"
-        body += """Content-Disposition: form-data; name="[data][add_info]"\r\n\r\n"""
+        body += """Content-Disposition: form-data; name="[data][add_info]"\r\n\r\n\r\n"""
 
         body += "--" + boundary + "\r\n"
-        body += """Content-Disposition: form-data; name="[data][merchant_branch_region_id]"\r\n{}\r\n""".\
+        body += """Content-Disposition: form-data; name="[data][merchant_branch_region_id]"\r\n\r\n{}\r\n""".\
             format(int(region.get_number())+1)
 
         body += "--" + boundary + "\r\n"
-        body += """Content-Disposition: form-data; name="[data][product_profile_id]"\r\n56\r\n"""
+        body += """Content-Disposition: form-data; name="[data][product_profile_id]"\r\n\r\n56\r\n"""
 
         body += "--" + boundary + "\r\n"
-        body += """Content-Disposition: form-data; name="[data][merchant_id]"\r\n39\r\n"""
+        body += """Content-Disposition: form-data; name="[data][merchant_id]"\r\n\r\n39\r\n"""
 
         body += "--" + boundary + "--\r\n"
         res = requests.post(url, data=body.encode(),
