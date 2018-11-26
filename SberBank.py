@@ -3,6 +3,8 @@ from DataBase.Region import Region
 import requests
 import json
 import time
+import random
+import string
 
 
 class SberBank(Bank):
@@ -98,18 +100,115 @@ class SberBank(Bank):
             if response["errors"][0]["_error"] == "authorization_required":
                 pass
 
-        entries = response['entries']
+        city_list = response['entries']
         our_city = None
 
-        for city in entries:
-            if org["Адрес"].find(city['name']) != -1:
+        for city in city_list:
+            if org["Адрес"].upper().find(city['name'].upper()) != -1:
                 our_city = city
                 break
 
         if our_city is None:
             err = "По адресу {} в регионе {} не найден город среди {}".format(org["Адрес"], region.get_name(),
-                                                                              str(entries))
+                                                                              str(city_list))
             log.write(err)
             raise Exception(err)
 
-        pass
+        url="https://ppapi.dasreda.ru/api/v1/merchant_branch_address?merchant_id=39&" \
+            "merchant_branch_city_id={}&profile_id=56&is_active=1".format(city["id"])
+
+        res = requests.get(url, headers={'Authorization': "Token token=" + self.SID['id'], "UserId": "10965",
+                                         "UserTime": self.SID['time'], "Source": "ui"})
+
+        response = json.loads(res.text)
+
+        office = response['entries'][0]
+
+        url = "https://ppapi.dasreda.ru/api/v1/order"
+
+        boundary = "----WebKitFormBoundary" + \
+                   ''.join(random.choices(string.ascii_uppercase + string.digits, k=16)).lower()
+
+        body = "--" + boundary  + "\n"
+        body += """Content-Disposition: form-data; name="[data][merchant_branch_id]"
+
+{}
+""".format(office["id"])
+
+        body += "--" + boundary  + "\n"
+        body += """Content-Disposition: form-data; name="[data][merchant_branch_city_id]"
+
+{}
+""".format(city["id"])
+
+        body += "--" + boundary  + "\n"
+        body += """Content-Disposition: form-data; name="[data][vat_number]"
+
+{}
+""".format(org["ИНН"])
+
+        body += "--" + boundary  + "\n"
+        body += """Content-Disposition: form-data; name="[data][company_name]"
+
+{}
+""".format(org["Название"])
+
+        body += "--" + boundary  + "\n"
+        body += """Content-Disposition: form-data; name="[data][last_name]"
+
+{}
+""".format(org["Фамилия"])
+
+        body += "--" + boundary  + "\n"
+        body += """Content-Disposition: form-data; name="[data][first_name]"
+
+{}
+""".format(org["Имя"])
+
+        body += "--" + boundary  + "\n"
+        body += """Content-Disposition: form-data; name="[data][middle_name]"
+
+{}
+""".format(org["Отчество"])
+
+        body += "--" + boundary  + "\n"
+        body += """Content-Disposition: form-data; name="[data][email]"
+
+
+"""
+
+        body += "--" + boundary  + "\n"
+        body += """Content-Disposition: form-data; name="[data][mobile_phone]"
+
+{}
+""".format(org["Телефон"])
+
+        body += "--" + boundary  + "\n"
+        body += """Content-Disposition: form-data; name="[data][add_info]"
+
+
+"""
+
+        body += "--" + boundary  + "\n"
+        body += """Content-Disposition: form-data; name="[data][merchant_branch_region_id]"
+
+{}
+""".format(int(region.get_number())+1)
+
+        body += "--" + boundary  + "\n"
+        body += """Content-Disposition: form-data; name="[data][product_profile_id]"
+
+56
+"""
+
+        body += "--" + boundary  + "\n"
+        body += """Content-Disposition: form-data; name="[data][merchant_id]"
+
+39
+"""
+
+        body += "--" + boundary + "--\n"
+
+        res = requests.post(url, headers={'Authorization': "Token token=" + self.SID['id'], "UserId": "10965",
+                                          "UserTime": self.SID['time'], "Source": "ui",
+                                          "Content-Type": "multipart/form-data; boundary=" + boundary})
