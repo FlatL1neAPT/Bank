@@ -129,85 +129,48 @@ class SberBank(Bank):
         boundary = "----WebKitFormBoundary" + \
                    ''.join(random.choices(string.ascii_uppercase + string.digits, k=16)).lower()
 
-        body = "--" + boundary  + "\n"
-        body += """Content-Disposition: form-data; name="[data][merchant_branch_id]"
+        body = "--" + boundary + "\r\n"
+        body += """Content-Disposition: form-data; name="[data][merchant_branch_id]"\r\n{}\r\n""".format(office["id"])
 
-{}
-""".format(office["id"])
+        body += "--" + boundary + "\r\n"
+        body += """Content-Disposition: form-data; name="[data][merchant_branch_city_id]"\r\n{}\r\n""".\
+            format(city["id"])
 
-        body += "--" + boundary  + "\n"
-        body += """Content-Disposition: form-data; name="[data][merchant_branch_city_id]"
+        body += "--" + boundary + "\r\n"
+        body += """Content-Disposition: form-data; name="[data][vat_number]"\r\n{}\r\n""".format(org["ИНН"])
 
-{}
-""".format(city["id"])
+        body += "--" + boundary + "\r\n"
+        body += """Content-Disposition: form-data; name="[data][company_name]"\r\n{}\r\n""".format(org["Название"])
 
-        body += "--" + boundary  + "\n"
-        body += """Content-Disposition: form-data; name="[data][vat_number]"
+        body += "--" + boundary + "\r\n"
+        body += """Content-Disposition: form-data; name="[data][last_name]"\r\n{}\r\n""".format(org["Фамилия"])
 
-{}
-""".format(org["ИНН"])
+        body += "--" + boundary + "\r\n"
+        body += """Content-Disposition: form-data; name="[data][first_name]"\r\n{}\r\n""".format(org["Имя"])
 
-        body += "--" + boundary  + "\n"
-        body += """Content-Disposition: form-data; name="[data][company_name]"
+        body += "--" + boundary + "\r\n"
+        body += """Content-Disposition: form-data; name="[data][middle_name]"\r\n{}\r\n""".format(org["Отчество"])
 
-{}
-""".format(org["Название"])
+        body += "--" + boundary + "\r\n"
+        body += """Content-Disposition: form-data; name="[data][email]"\r\n\r\n"""
 
-        body += "--" + boundary  + "\n"
-        body += """Content-Disposition: form-data; name="[data][last_name]"
+        body += "--" + boundary + "\r\n"
+        body += """Content-Disposition: form-data; name="[data][mobile_phone]"\r\n{}\r\n""".format(org["Телефон"])
 
-{}
-""".format(org["Фамилия"])
+        body += "--" + boundary + "\r\n"
+        body += """Content-Disposition: form-data; name="[data][add_info]"\r\n\r\n"""
 
-        body += "--" + boundary  + "\n"
-        body += """Content-Disposition: form-data; name="[data][first_name]"
+        body += "--" + boundary + "\r\n"
+        body += """Content-Disposition: form-data; name="[data][merchant_branch_region_id]"\r\n{}\r\n""".\
+            format(int(region.get_number())+1)
 
-{}
-""".format(org["Имя"])
+        body += "--" + boundary + "\r\n"
+        body += """Content-Disposition: form-data; name="[data][product_profile_id]"\r\n56\r\n"""
 
-        body += "--" + boundary  + "\n"
-        body += """Content-Disposition: form-data; name="[data][middle_name]"
+        body += "--" + boundary + "\r\n"
+        body += """Content-Disposition: form-data; name="[data][merchant_id]"\r\n39\r\n"""
 
-{}
-""".format(org["Отчество"])
-
-        body += "--" + boundary  + "\n"
-        body += """Content-Disposition: form-data; name="[data][email]"
-
-
-"""
-
-        body += "--" + boundary  + "\n"
-        body += """Content-Disposition: form-data; name="[data][mobile_phone]"
-
-{}
-""".format(org["Телефон"])
-
-        body += "--" + boundary  + "\n"
-        body += """Content-Disposition: form-data; name="[data][add_info]"
-
-
-"""
-
-        body += "--" + boundary  + "\n"
-        body += """Content-Disposition: form-data; name="[data][merchant_branch_region_id]"
-
-{}
-""".format(int(region.get_number())+1)
-
-        body += "--" + boundary  + "\n"
-        body += """Content-Disposition: form-data; name="[data][product_profile_id]"
-
-56
-"""
-
-        body += "--" + boundary  + "\n"
-        body += """Content-Disposition: form-data; name="[data][merchant_id]"
-
-39
-"""
-
-        body += "--" + boundary + "--\n"
+        body += "--" + boundary + "--\r\n"
         res = requests.post(url, data=body.encode(),
                             headers={'Authorization': "Token token=" + self.SID['id'], "UserId": "10965",
                                      "UserTime": self.SID['time'], "Source": "ui",
