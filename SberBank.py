@@ -1,4 +1,5 @@
 from Bank.Bank import Bank
+from DataBase.Region import Region
 import requests
 import json
 import time
@@ -72,3 +73,43 @@ class SberBank(Bank):
                 return True
 
         return False
+
+    def send_org(self, org, log):
+
+        region = Region.find_region_by_address(org["Адрес"])
+
+        if region is None:
+            err = "По адресу {} не найден регион".format(org["Адрес"])
+            log.write(err)
+            raise Exception(err)
+
+        if self.SID['id'] is None:
+            self.SID['id'], self.SID['time'] = SberBank._login("koromandeu@mail.ru", "09876qwE")
+
+        url = "https://ppapi.dasreda.ru/api/v1/merchant_branch_city?merchant_id=39&" \
+              "merchant_branch_region_id={}&profile_id=56&is_active=1".format(int(region.get_number())+1)
+
+        res = requests.get(url, headers={'Authorization': "Token token=" + self.SID['id'], "UserId": "10965",
+                                         "UserTime": self.SID['time'], "Source": "ui"})
+
+        response = json.loads(res.text)
+
+        if res.status_code == 401:
+            if response["errors"][0]["_error"] == "authorization_required":
+                pass
+
+        entries = response['entries']
+        our_city = None
+
+        for city in entries:
+            if org["Адрес"].find(city['name']) != -1:
+                our_city = city
+                break
+
+        if our_city is None:
+            err = "По адресу {} в регионе {} не найден город среди {}".format(org["Адрес"], region.get_name(),
+                                                                              str(entries))
+            log.write(err)
+            raise Exception(err)
+
+        pass

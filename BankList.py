@@ -20,6 +20,24 @@ class BankList:
 
         return res
 
+    @staticmethod
+    def get_by_name(name):
+        controller = DBController()
+        cur = controller.get_cursor()
+
+        cur.execute("""SELECT * From Bank WHERE Name = %s;""", (name,))
+
+        bank_list = cur.fetchall()
+
+        if len(bank_list) == 0:
+            return None
+
+        bank_rec = bank_list[0]
+
+        module = __import__("Bank." + bank_rec["Module"])
+        return getattr(getattr(module, bank_rec["Module"]), bank_rec["Module"])(bank_rec)
+
+
 
 if __name__ == "__main__":
     for bank in BankList.get():
