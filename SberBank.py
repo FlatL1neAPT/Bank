@@ -212,3 +212,5 @@ class SberBank(Bank):
         res = requests.post(url, headers={'Authorization': "Token token=" + self.SID['id'], "UserId": "10965",
                                           "UserTime": self.SID['time'], "Source": "ui",
                                           "Content-Type": "multipart/form-data; boundary=" + boundary})
+
+        log.write(res.txt)
