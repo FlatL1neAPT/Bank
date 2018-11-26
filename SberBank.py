@@ -213,4 +213,5 @@ class SberBank(Bank):
                                           "UserTime": self.SID['time'], "Source": "ui",
                                           "Content-Type": "multipart/form-data; boundary=" + boundary})
 
-        log.write(res.txt)
+        log.write("Результат" + str(res))
+        log.write(res.text)
