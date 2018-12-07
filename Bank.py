@@ -40,6 +40,8 @@ class Bank:
         self.cur.execute("""INSERT INTO Organization_Bank (Organization, Bank) VALUES (%s,%s)""",
                          (org_id, self.rec["ID"]))
 
+        self.controller.save_changes()
+
     def name(self):
         return self.rec["Name"]
 
