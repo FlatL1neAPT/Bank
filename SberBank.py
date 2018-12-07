@@ -50,6 +50,9 @@ class SberBank(Bank):
 
         return "", ""
 
+    def is_allow_uncorrect_address(self):
+        return False
+
     def is_in_odp(self, inn):
 
         if self.SID['id'] is None:

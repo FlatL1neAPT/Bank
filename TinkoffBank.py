@@ -8,6 +8,9 @@ class TinkoffBank(Bank):
     def __init__(self, rec):
         super().__init__(rec)
 
+    def is_allow_uncorrect_address(self):
+        return True
+
     def is_in_odp(self, inn):
         from datetime import datetime
 

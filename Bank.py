@@ -35,6 +35,11 @@ class Bank:
         for region_rec in region_list:
             self.regions.append(Region(region_rec))
 
+    def apeend_organization(self, org_id):
+
+        self.cur.execute("""INSERT INTO Organization_Bank (Organization, Bank) VALUES (%s,%s)""",
+                         (org_id, self.rec["ID"]))
+
     def name(self):
         return self.rec["Name"]
 
@@ -42,6 +47,12 @@ class Bank:
         return self.rec["ID"]
 
     def is_region_allow(self, address):
+
+        if not Region.is_adress_correct(address):
+            if self.is_allow_uncorrect_address():
+                return True
+            else:
+                return False
 
         for region in self.regions:
             if region.address_in_region(address):
