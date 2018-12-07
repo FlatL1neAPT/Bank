@@ -37,7 +37,8 @@ class Bank:
 
     def apeend_organization(self, org_id):
 
-        self.cur.execute("""INSERT INTO Organization_Bank (Organization, Bank) VALUES (%s,%s)""",
+        self.cur.execute("""INSERT INTO Organization_Bank_CallCenter (Organization, Bank, CallCenter) 
+                            VALUES (%s,%s, 1)""",
                          (org_id, self.rec["ID"]))
 
         self.controller.save_changes()
