@@ -49,6 +49,16 @@ class Bank:
     def id(self):
         return self.rec["ID"]
 
+    def auth_data(self):
+        return self.rec["AuthData"]
+
+    def save_auth_data(self, data):
+        self.cur.execute("UPDATE Bank SET AuthData = %s WHERE ID = %s;", (data, self.rec["ID"]))
+        self.controller.save_changes()
+
+    def region_list(self):
+        return self.regions
+
     def is_region_allow(self, address):
 
         if not Region.is_adress_correct(address):

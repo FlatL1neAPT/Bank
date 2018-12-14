@@ -13,8 +13,12 @@ class SberBank(Bank):
         self.SID = {"id": None, "time": None}
         super().__init__(rec)
 
-    @staticmethod
-    def _login(username, password):
+        ad = self.auth_data()
+
+        if ad is not None:
+            self.SID = json.loads(ad)
+
+    def _login(self, username, password):
         request = {"data": {
             "username": username,
             "password": password
@@ -46,6 +50,7 @@ class SberBank(Bank):
             for i in range(0, len(guid)):
                 res += guid[cts % (i + 0x1)]
 
+            self.save_auth_data(json.dumps({"id": res, "time": str(ts)}))
             return res, str(ts)
 
         return "", ""
@@ -56,7 +61,7 @@ class SberBank(Bank):
     def is_in_odp(self, inn):
 
         if self.SID['id'] is None:
-            self.SID['id'], self.SID['time'] = SberBank._login("koromandeu@mail.ru", "09876qwE")
+            self.SID['id'], self.SID['time'] = self._login("koromandeu@mail.ru", "09876qwE")
 
         url = "https://ppapi.dasreda.ru/api/v1/order/new?merchant_id=39&product_" \
               "type=2&product_profile_id=53&vat_number=" + inn
@@ -89,7 +94,7 @@ class SberBank(Bank):
             raise Exception(err)
 
         if self.SID['id'] is None:
-            self.SID['id'], self.SID['time'] = SberBank._login("koromandeu@mail.ru", "09876qwE")
+            self.SID['id'], self.SID['time'] = self._login("koromandeu@mail.ru", "09876qwE")
 
         url = "https://ppapi.dasreda.ru/api/v1/merchant_branch_city?merchant_id=39&" \
               "merchant_branch_region_id={}&profile_id=56&is_active=1".format(int(region.get_number())+1)
@@ -182,3 +187,57 @@ class SberBank(Bank):
 
         log.write("Результат" + str(res))
         log.write(res.text)
+
+    def get_work_region_list(self):
+
+        region_list = self.region_list()
+
+        res = []
+
+        for region in region_list:
+            res.append( {'ID': int(region.get_number()) + 1, 'name': region.get_name()})
+
+        return res
+
+    def get_work_region_city_list(self, region):
+        if self.SID['id'] is None:
+            self.SID['id'], self.SID['time'] = self._login("koromandeu@mail.ru", "09876qwE")
+
+        url = "https://ppapi.dasreda.ru/api/v1/merchant_branch_city?merchant_id=39&" \
+              "merchant_branch_region_id={}&profile_id=56&is_active=1".format(int(region))
+
+        res = requests.get(url, headers={'Authorization': "Token token=" + self.SID['id'], "UserId": "10965",
+                                         "UserTime": self.SID['time'], "Source": "ui"})
+
+        response = json.loads(res.text)
+
+        city_list = response['entries']
+
+        res = []
+
+        for city in city_list:
+            res.append({'ID': city["id"], 'name': city["name"]})
+
+        return res
+
+    def get_work_region_city_office_list(self, region, city):
+
+        if self.SID['id'] is None:
+            self.SID['id'], self.SID['time'] = self._login("koromandeu@mail.ru", "09876qwE")
+
+        url = "https://ppapi.dasreda.ru/api/v1/merchant_branch_address?merchant_id=39&" \
+              "merchant_branch_city_id={}&profile_id=56&is_active=1".format(city)
+
+        res = requests.get(url, headers={'Authorization': "Token token=" + self.SID['id'], "UserId": "10965",
+                                         "UserTime": self.SID['time'], "Source": "ui"})
+
+        response = json.loads(res.text)
+
+        office_list = response['entries']
+
+        res = []
+
+        for office in office_list:
+            res.append({'ID': office["id"], 'name': office["name"]})
+
+        return res
