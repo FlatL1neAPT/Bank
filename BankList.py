@@ -38,7 +38,6 @@ class BankList:
         return getattr(getattr(module, bank_rec["Module"]), bank_rec["Module"])(bank_rec)
 
 
-
 if __name__ == "__main__":
     for bank in BankList.get():
         res = bank.is_region_allow("629320,ЯМАЛО-НЕНЕЦКИЙ АВТОНОМНЫЙ ОКРУГ, ,НОВЫЙ УРЕНГОЙ ГОРОД, ,МИРА ПРОСПЕКТ,ДОМ 32, ,КВАРТИРА 129")

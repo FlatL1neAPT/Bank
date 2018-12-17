@@ -1,4 +1,4 @@
-from Bank import Bank
+from Bank.Bank import Bank
 from datetime import datetime
 import hashlib
 import json
@@ -58,47 +58,42 @@ class VTB24(Bank):
         return res
 
     def get_work_region_city_list(self, region):
-        if self.SID['id'] is None:
-            self.SID['id'], self.SID['time'] = self._login("koromandeu@mail.ru", "09876qwE")
+        if self.Token is None:
+            self.Token = self.auth()
 
-        url = "https://ppapi.dasreda.ru/api/v1/merchant_branch_city?merchant_id=39&" \
-              "merchant_branch_region_id={}&profile_id=56&is_active=1".format(int(region))
+        url = "https://mb-partner.bm.ru/misc/cities?region_code=" + region
 
-        res = requests.get(url, headers={'Authorization': "Token token=" + self.SID['id'], "UserId": "10965",
-                                         "UserTime": self.SID['time'], "Source": "ui"})
-
+        res = requests.get(url, headers={'Token': self.Token})
         response = json.loads(res.text)
-
-        city_list = response['entries']
 
         res = []
 
-        for city in city_list:
-            res.append({'ID': city["id"], 'name': city["name"]})
+        for city in response["city_list"]:
+            res.append({'ID': city['id']['value'], 'name': city['name']['value']})
 
         return res
 
     def get_work_region_city_office_list(self, region, city):
 
-        if self.SID['id'] is None:
-            self.SID['id'], self.SID['time'] = self._login("koromandeu@mail.ru", "09876qwE")
+        if self.Token is None:
+            self.Token = self.auth()
 
-        url = "https://ppapi.dasreda.ru/api/v1/merchant_branch_address?merchant_id=39&" \
-              "merchant_branch_city_id={}&profile_id=56&is_active=1".format(city)
+        url = "https://mb-partner.bm.ru//misc/branch/" + region + "?city_id=" + city
 
-        res = requests.get(url, headers={'Authorization': "Token token=" + self.SID['id'], "UserId": "10965",
-                                         "UserTime": self.SID['time'], "Source": "ui"})
-
+        res = requests.get(url, headers={'Token': self.Token})
         response = json.loads(res.text)
-
-        office_list = response['entries']
 
         res = []
 
-        for office in office_list:
-            res.append({'ID': office["id"], 'name': office["name"]})
+        for branch in response["branch_list"]["list"]:
+
+            if branch['name']['value'] == 'Колл-центр':
+                continue
+
+            res.append({'ID': branch['id']['value'], 'name': branch['name']['value']})
 
         return res
+
 
 if __name__ == "__main__":
 
