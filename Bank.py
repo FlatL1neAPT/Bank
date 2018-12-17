@@ -75,5 +75,4 @@ class Bank:
 
 
 if __name__ == "__main__":
-    Bank.create("Тинькофф")
-    Bank.create("Сбербанк")
+    Bank.create("ВТБ24")
