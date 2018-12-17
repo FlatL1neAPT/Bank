@@ -82,7 +82,9 @@ class SberBank(Bank):
 
         return False
 
-    def send_org(self, org, log):
+    def _auto_detect_office(self, org, log):
+
+        log.write("Автоопределение офиса\n")
 
         region = Region.find_region_by_address(org["Адрес"])
 
@@ -95,7 +97,7 @@ class SberBank(Bank):
             self.SID['id'], self.SID['time'] = self._login("koromandeu@mail.ru", "09876qwE")
 
         url = "https://ppapi.dasreda.ru/api/v1/merchant_branch_city?merchant_id=39&" \
-              "merchant_branch_region_id={}&profile_id=56&is_active=1".format(int(region.get_number())+1)
+              "merchant_branch_region_id={}&profile_id=56&is_active=1".format(int(region.get_number()) + 1)
 
         res = requests.get(url, headers={'Authorization': "Token token=" + self.SID['id'], "UserId": "10965",
                                          "UserTime": self.SID['time'], "Source": "ui"})
@@ -124,8 +126,8 @@ class SberBank(Bank):
             log.write(err)
             raise Exception(err)
 
-        url="https://ppapi.dasreda.ru/api/v1/merchant_branch_address?merchant_id=39&" \
-            "merchant_branch_city_id={}&profile_id=56&is_active=1".format(city["id"])
+        url = "https://ppapi.dasreda.ru/api/v1/merchant_branch_address?merchant_id=39&" \
+              "merchant_branch_city_id={}&profile_id=56&is_active=1".format(city["id"])
 
         res = requests.get(url, headers={'Authorization': "Token token=" + self.SID['id'], "UserId": "10965",
                                          "UserTime": self.SID['time'], "Source": "ui"})
@@ -133,6 +135,38 @@ class SberBank(Bank):
         response = json.loads(res.text)
 
         office = response['entries'][0]
+
+        return region, city, office
+
+    def send_org(self, org, log):
+
+        region = None
+        city = None
+        office = None
+
+        try:
+            region, city, office = self._auto_detect_office(org, log)
+            region = int(region.get_number()) + 1
+        except Exception as exc:
+            log.write("Ошибка при автоопределении офиса " + str(exc))
+
+        if org["comment"] is not None:
+            if org["comment"].find("#ОфисБанка:") != -1:
+                address = org["comment"]
+                start_pos = address.find("#ОфисБанка:")
+                address = org["comment"][start_pos + 1:]
+                end_pos = address.find("#")
+
+                address = address[:end_pos]
+
+                fields = address.split(":")
+
+                region = fields[2]
+                city = fields[3]
+                office = fields[4]
+
+        if region is None or city is None or office is None:
+            raise Exception("Не удалось определить офис банка")
 
         url = "https://ppapi.dasreda.ru/api/v1/order"
 
@@ -173,7 +207,7 @@ class SberBank(Bank):
 
         body += "--" + boundary + "\r\n"
         body += """Content-Disposition: form-data; name="[data][merchant_branch_region_id]"\r\n\r\n{}\r\n""".\
-            format(int(region.get_number())+1)
+            format(region)
 
         body += "--" + boundary + "\r\n"
         body += """Content-Disposition: form-data; name="[data][product_profile_id]"\r\n\r\n56\r\n"""
