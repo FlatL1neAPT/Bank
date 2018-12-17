@@ -68,13 +68,11 @@ class SberBank(Bank):
 
         res = requests.get(url, headers={'Authorization': "Token token=" + self.SID['id'], "UserId": "10965",
                                          "UserTime": self.SID['time'], "Source": "ui"})
-        response = json.loads(res.text)
 
         if res.status_code == 401:
-            if response["errors"][0]["_error"] == "authorization_required":
-                self.SID['id'], self.SID['time'] = SberBank._login("koromandeu@mail.ru", "09876qwE")
-                res = requests.get(url, headers={'Authorization': "Token token=" + self.SID['id'], "UserId": "10965",
-                                                 "UserTime": self.SID['time'], "Source": "ui"})
+            self.SID['id'], self.SID['time'] = SberBank._login("koromandeu@mail.ru", "09876qwE")
+            res = requests.get(url, headers={'Authorization': "Token token=" + self.SID['id'], "UserId": "10965",
+                                             "UserTime": self.SID['time'], "Source": "ui"})
 
         response = json.loads(res.text)
 
@@ -101,6 +99,10 @@ class SberBank(Bank):
 
         res = requests.get(url, headers={'Authorization': "Token token=" + self.SID['id'], "UserId": "10965",
                                          "UserTime": self.SID['time'], "Source": "ui"})
+
+        if res.status_code == 401:
+            res = requests.get(url, headers={'Authorization': "Token token=" + self.SID['id'], "UserId": "10965",
+                                             "UserTime": self.SID['time'], "Source": "ui"})
 
         response = json.loads(res.text)
 
@@ -209,6 +211,12 @@ class SberBank(Bank):
         res = requests.get(url, headers={'Authorization': "Token token=" + self.SID['id'], "UserId": "10965",
                                          "UserTime": self.SID['time'], "Source": "ui"})
 
+        if res.status_code == 401:
+            self.SID['id'], self.SID['time'] = self._login("koromandeu@mail.ru", "09876qwE")
+
+            res = requests.get(url, headers={'Authorization': "Token token=" + self.SID['id'], "UserId": "10965",
+                                             "UserTime": self.SID['time'], "Source": "ui"})
+
         response = json.loads(res.text)
 
         city_list = response['entries']
@@ -230,6 +238,12 @@ class SberBank(Bank):
 
         res = requests.get(url, headers={'Authorization': "Token token=" + self.SID['id'], "UserId": "10965",
                                          "UserTime": self.SID['time'], "Source": "ui"})
+
+        if res.status_code == 401:
+            self.SID['id'], self.SID['time'] = self._login("koromandeu@mail.ru", "09876qwE")
+
+            res = requests.get(url, headers={'Authorization': "Token token=" + self.SID['id'], "UserId": "10965",
+                                             "UserTime": self.SID['time'], "Source": "ui"})
 
         response = json.loads(res.text)
 
