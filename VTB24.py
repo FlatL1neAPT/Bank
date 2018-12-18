@@ -3,7 +3,7 @@ from datetime import datetime
 import hashlib
 import json
 import requests
-
+from urllib.parse import quote
 
 class VTB24(Bank):
 
@@ -81,13 +81,19 @@ class VTB24(Bank):
             "fio": org["Фамилия"] + ' ' + org["Имя"] + ' ' + org["Отчество"],
             "region": region,
             "city": city,
-            "branch": office
+            "branch": int(office),
+            "agreement": "1"
         }
 
         url = "https://mb-partner.bm.ru/anketa/" + add_response["id_anketa"] + "/edit"
 
-        res = requests.post(url, json=body, headers={'Token': self.Token})
-        edit_response = json.loads(res.text)
+        res = requests.post(url, data="anketaid=" + add_response["id_anketa"] + "&anketadata=" + quote(json.dumps(body)),
+                            headers={'Token': self.Token, 'Content-Type': 'application/x-www-form-urlencoded'})
+
+        url = "https://mb-partner.bm.ru/anketa/" + add_response["id_anketa"] + "/apply"
+
+        res = requests.post(url, data="id=" + add_response["id_anketa"],
+                            headers={'Token': self.Token, 'Content-Type': 'application/x-www-form-urlencoded'})
 
         log.write("Результат" + str(res))
         log.write(res.text)
