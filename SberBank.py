@@ -136,7 +136,7 @@ class SberBank(Bank):
 
         office = response['entries'][0]
 
-        return region, city, office
+        return region, city["id"], office["id"]
 
     def send_org(self, org, log):
 
@@ -175,11 +175,11 @@ class SberBank(Bank):
 
         body = "--" + boundary + "\r\n"
         body += """Content-Disposition: form-data; name="[data][merchant_branch_id]"\r\n\r\n{}\r\n""".\
-            format(office["id"])
+            format(office)
 
         body += "--" + boundary + "\r\n"
         body += """Content-Disposition: form-data; name="[data][merchant_branch_city_id]"\r\n\r\n{}\r\n""".\
-            format(city["id"])
+            format(city)
 
         body += "--" + boundary + "\r\n"
         body += """Content-Disposition: form-data; name="[data][vat_number]"\r\n\r\n{}\r\n""".format(org["ИНН"])
@@ -220,6 +220,14 @@ class SberBank(Bank):
                             headers={'Authorization': "Token token=" + self.SID['id'], "UserId": "10965",
                                      "UserTime": self.SID['time'], "Source": "ui",
                                      "Content-Type": "multipart/form-data; boundary=" + boundary})
+
+        if res.status_code == 401:
+            self.SID['id'], self.SID['time'] = self._login("koromandeu@mail.ru", "09876qwE")
+
+            res = requests.post(url, data=body.encode(),
+                                headers={'Authorization': "Token token=" + self.SID['id'], "UserId": "10965",
+                                         "UserTime": self.SID['time'], "Source": "ui",
+                                         "Content-Type": "multipart/form-data; boundary=" + boundary})
 
         log.write("Результат" + str(res))
         log.write(res.text)
