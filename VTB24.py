@@ -46,7 +46,7 @@ class VTB24(Bank):
         res = requests.get(url, headers={'Token': self.Token})
         response = json.loads(res.text)
 
-        if response["status_code"] == 13:
+        if response["status_code"] == '13':
             return False
 
         return True
@@ -55,7 +55,7 @@ class VTB24(Bank):
 
         if self.is_in_odp(org["ИНН"]):
             log.write("На момент отправки клиент в ОДП")
-            return
+            return "ВТБ: На момент отправки клиент в ОДП"
 
         region = None
         city = None
