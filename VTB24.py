@@ -53,6 +53,10 @@ class VTB24(Bank):
 
     def send_org(self, org, log):
 
+        if self.is_in_odp(org["ИНН"]):
+            log.write("На момент отправки клиент в ОДП")
+            return
+
         region = None
         city = None
         office = None
