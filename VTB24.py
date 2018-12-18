@@ -38,7 +38,18 @@ class VTB24(Bank):
         return True
 
     def is_in_odp(self, inn):
-        return False
+        if self.Token is None:
+            self.Token = self.auth()
+
+        url = "https://mb-partner.bm.ru//anketa/anketa_exists_inn?inn=" + inn
+
+        res = requests.get(url, headers={'Token': self.Token})
+        response = json.loads(res.text)
+
+        if response["status_code"] == 13:
+            return False
+
+        return True
 
     def send_org(self, org, log):
 
@@ -154,6 +165,15 @@ class VTB24(Bank):
 
 
 if __name__ == "__main__":
+    from DataBase.DBController import DBController
+    controller = DBController()
+    cur = controller.get_cursor()
 
-    bank = VTB24({"ID":8})
-    bank.get_work_region_list()
+    cur.execute("""SELECT * From Bank WHERE Name = %s;""", ("ВТБ24",))
+
+    bank_list = cur.fetchall()
+
+    bank_rec = bank_list[0]
+
+    bank = VTB24(bank_rec)
+    bank.is_in_odp("310262282808")
