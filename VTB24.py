@@ -40,6 +40,58 @@ class VTB24(Bank):
     def is_in_odp(self, inn):
         return False
 
+    def send_org(self, org, log):
+
+        region = None
+        city = None
+        office = None
+
+        if org["Комментарий"] is None or org["Комментарий"].find("#ОфисБанка:") == -1:
+            log.write("Нет информации об отделении банка")
+            raise Exception("Нет информации об отделении банка")
+
+        address = org["Комментарий"]
+        start_pos = address.find("#ОфисБанка:")
+        address = org["Комментарий"][start_pos + 1:]
+        end_pos = address.find("#")
+
+        address = address[:end_pos]
+
+        fields = address.split(":")
+
+        region = fields[2]
+        city = fields[3]
+        office = fields[4]
+
+        if region is None or city is None or office is None:
+            raise Exception("Не удалось определить офис банка")
+
+        if self.Token is None:
+            self.Token = self.auth()
+
+        url = "https://mb-partner.bm.ru/anketa/add"
+
+        res = requests.post(url, headers={'Token': self.Token})
+        add_response = json.loads(res.text)
+
+        body = {
+            "inn": org["ИНН"],
+            "org_name": org["Название"],
+            "contact_phone": org["Телефон"],
+            "fio": org["Фамилия"] + ' ' + org["Имя"] + ' ' + org["Отчество"],
+            "region": region,
+            "city": city,
+            "branch": office
+        }
+
+        url = "https://mb-partner.bm.ru/anketa/" + add_response["id_anketa"] + "/edit"
+
+        res = requests.post(url, json=body, headers={'Token': self.Token})
+        edit_response = json.loads(res.text)
+
+        log.write("Результат" + str(res))
+        log.write(res.text)
+
     def get_work_region_list(self):
 
         if self.Token is None:

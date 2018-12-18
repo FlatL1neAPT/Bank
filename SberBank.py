@@ -70,7 +70,7 @@ class SberBank(Bank):
                                          "UserTime": self.SID['time'], "Source": "ui"})
 
         if res.status_code == 401:
-            self.SID['id'], self.SID['time'] = SberBank._login("koromandeu@mail.ru", "09876qwE")
+            self.SID['id'], self.SID['time'] = self._login("koromandeu@mail.ru", "09876qwE")
             res = requests.get(url, headers={'Authorization': "Token token=" + self.SID['id'], "UserId": "10965",
                                              "UserTime": self.SID['time'], "Source": "ui"})
 
@@ -150,11 +150,11 @@ class SberBank(Bank):
         except Exception as exc:
             log.write("Ошибка при автоопределении офиса " + str(exc))
 
-        if org["comment"] is not None:
-            if org["comment"].find("#ОфисБанка:") != -1:
-                address = org["comment"]
+        if org["Комментарий"] is not None:
+            if org["Комментарий"].find("#ОфисБанка:") != -1:
+                address = org["Комментарий"]
                 start_pos = address.find("#ОфисБанка:")
-                address = org["comment"][start_pos + 1:]
+                address = org["Комментарий"][start_pos + 1:]
                 end_pos = address.find("#")
 
                 address = address[:end_pos]
