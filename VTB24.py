@@ -148,6 +148,9 @@ class VTB24(Bank):
 
     def get_work_region_city_office_list(self, region, city):
 
+        if region == '50' or region == '77':
+            return [{"ID": '4327', "name": 'м. Кузнецкий мост, ул. Пушечная, д.5'}]
+
         if self.Token is None:
             self.Token = self.auth()
 
