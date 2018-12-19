@@ -140,6 +140,10 @@ class SberBank(Bank):
 
     def send_org(self, org, log):
 
+        if self.is_in_odp(org["ИНН"]):
+            log.write("На момент отправки клиент в ОДП")
+            return "СБ: На момент отправки клиент в ОДП"
+
         region = None
         city = None
         office = None
