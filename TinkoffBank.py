@@ -44,6 +44,8 @@ class TinkoffBank(Bank):
 
         auth_data = json.loads(acc_data["Data"])
 
+        print(auth_data["Название"])
+
         headers = {'Authorization': """Partner-Basic api-key="{}", api-secret="{}", agent-id="{}" """.
             format(auth_data["api-key"], auth_data["api-secret"], auth_data["agent-id"])}
 
