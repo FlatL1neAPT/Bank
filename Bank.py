@@ -36,6 +36,21 @@ class Bank:
         for region_rec in region_list:
             self.regions.append(Region(region_rec))
 
+    def get_acc_data(self):
+
+        acc_list = []
+
+        while(len(acc_list) == 0):
+            self.cur.execute("""SELECT * FROM BankAccount WHERE TIMESTAMPDIFF( SECOND, LastUsing, NOW()) > 10;""")
+            acc_list = self.cur.fetchall()
+
+        return acc_list[0]
+
+    def set_using_acc_data(self, acc_data):
+
+        self.cur.execute("""UPDATE BankAccount SET LastUsing = NOW() WHERE ID = """ + str(acc_data["ID"]) )
+        self.controller.save_changes()
+
     def apeend_organization(self, org_id):
 
         self.cur.execute("""INSERT INTO Organization_Bank_CallCenter (Organization, Bank, CallCenter) 
