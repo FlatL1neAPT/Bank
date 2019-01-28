@@ -9,8 +9,8 @@ class VTB24(Bank):
 
     def __init__(self, rec):
         super().__init__(rec)
-        self.key1 = "dd21febcfb7f17b639e951804cefa873583559894aca91224b535d509bbcb1c1"
-        self.key2 = "66b01b6ed9a89ea08989682b5e72c85c5c1b18087b65e9227589b56b672bc70d"
+        self.key1 = "f3a7336f0c656573ec6232cdf6b4e9dc4f251ffdbea4a219b93779adc75f38cd"
+        self.key2 = "3e368852e335c25e78a202891de4b1133b3ce67dbf20d903a091ff6ef34d91d5"
 
         self.Token = None
 
