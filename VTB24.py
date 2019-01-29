@@ -97,10 +97,14 @@ class VTB24(Bank):
             "region": region,
             "city": city,
             "branch": int(office),
-            "agreement": "1"
+            "agreement": "1",
+            "add_info": "Профит Сейл"
         }
 
         url = "https://mb-partner.bm.ru/anketa/" + add_response["id_anketa"] + "/edit"
+
+        log.write("Запрос\n")
+        log.write(str(body))
 
         res = requests.post(url, data="anketaid=" + add_response["id_anketa"] + "&anketadata=" + quote(json.dumps(body)),
                             headers={'Token': self.Token, 'Content-Type': 'application/x-www-form-urlencoded'})
