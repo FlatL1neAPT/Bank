@@ -40,7 +40,7 @@ class TinkoffBank(Bank):
 
     def is_in_odp_full(self, inn, phone):
 
-        acc_data = super().get_acc_data()
+        acc_data = super().get_acc_data(7)
 
         auth_data = json.loads(acc_data["Data"])
 

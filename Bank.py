@@ -36,12 +36,12 @@ class Bank:
         for region_rec in region_list:
             self.regions.append(Region(region_rec))
 
-    def get_acc_data(self):
+    def get_acc_data(self, id):
 
         acc_list = []
 
         while(len(acc_list) == 0):
-            self.cur.execute("""SELECT * FROM BankAccount WHERE TIMESTAMPDIFF( SECOND, LastUsing, NOW()) > 10;""")
+            self.cur.execute("""SELECT * FROM BankAccount WHERE TIMESTAMPDIFF( SECOND, LastUsing, NOW()) > 10 AND Bank = {};""".format(id))
             acc_list = self.cur.fetchall()
 
         return acc_list[0]
