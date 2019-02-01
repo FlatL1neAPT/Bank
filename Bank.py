@@ -69,13 +69,17 @@ class Bank:
         return self.rec["AuthData"]
 
     def main_acc_data(self):
-        return json.loads(self.rec["AuthData"])
+
+        try:
+            return json.loads(self.rec["AuthData"])
+        except:
+            return {"data": self.rec["AuthData"]}
 
     def acc_list(self):
-        self.cur.execute("SELECT Data FROM BankAccount WHERE Bank = %s;", (self.rec["ID"],))
+        self.cur.execute("SELECT Data, LastUsing FROM BankAccount WHERE Bank = %s;", (self.rec["ID"],))
         acc_list = self.cur.fetchall()
 
-        return [json.loads(row["Data"]) for row in acc_list]
+        return [{"data": json.loads(row["Data"]), "LastUsing": row["LastUsing"]} for row in acc_list]
 
     def save_auth_data(self, data):
         self.cur.execute("UPDATE Bank SET AuthData = %s WHERE ID = %s;", (data, self.rec["ID"]))

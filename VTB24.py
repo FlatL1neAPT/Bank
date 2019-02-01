@@ -174,6 +174,10 @@ class VTB24(Bank):
 
         return res
 
+    def is_in_odp_full(self, inn, phone):
+
+        return self.is_in_odp(inn)
+
 
 if __name__ == "__main__":
     from DataBase.DBController import DBController

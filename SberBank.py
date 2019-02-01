@@ -301,3 +301,7 @@ class SberBank(Bank):
             res.append({'ID': office["id"], 'name': office["name"]})
 
         return res
+
+    def is_in_odp_full(self, inn, phone):
+
+        return self.is_in_odp(inn)
