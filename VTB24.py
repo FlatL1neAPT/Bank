@@ -119,20 +119,27 @@ class VTB24(Bank):
 
     def get_work_region_list(self):
 
-        if self.Token is None:
-            self.Token = self.auth()
+        def impl():
+            if self.Token is None:
+                self.Token = self.auth()
 
-        url = "https://mb-partner.bm.ru/misc/regions"
+            url = "https://mb-partner.bm.ru/misc/regions"
 
-        res = requests.get(url, headers={'Token': self.Token})
-        response = json.loads(res.text)
+            res = requests.get(url, headers={'Token': self.Token})
+            response = json.loads(res.text)
 
-        res = []
+            res = []
 
-        for region in response["region_list"]:
-            res.append({'ID': region['value'], 'name': region['name']})
+            for region in response["region_list"]:
+                res.append({'ID': region['value'], 'name': region['name']})
 
-        return res
+            return res
+
+        try:
+            return impl()
+        except:
+            self.Token = None
+            return impl()
 
     def get_work_region_city_list(self, region):
         if self.Token is None:
