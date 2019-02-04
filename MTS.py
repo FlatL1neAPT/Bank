@@ -160,9 +160,9 @@ class MTS(Bank):
                """Название: {}\n"""\
                """ИНН: {}\n"""
 
-        text.format(org["Телефон"], "", region, city, office, org_type,
-                    org["Фамилия"] + ' ' + org["Имя"] + ' ' + org["Отчество"],
-                    org["Название"], org["ИНН"])
+        text = text.format(org["Телефон"], "", region, city, office, org_type,
+                           org["Фамилия"] + ' ' + org["Имя"] + ' ' + org["Отчество"],
+                           org["Название"], org["ИНН"])
 
         smtpObj = smtplib.SMTP('smtp.mail.yahoo.com', 587)
         smtpObj.starttls()
@@ -172,6 +172,7 @@ class MTS(Bank):
         msg["Subject"] = Header("Профит сейл.Заявка {}".format(org["Номер"])).encode()
 
         smtpObj.sendmail("litrez007@yahoo.com", ["koromandeu@mail.ru", "Rgusejnov@mtsbank.ru"], msg.as_string())
+        #smtpObj.sendmail("litrez007@yahoo.com", ["koromandeu@mail.ru", "koroman100@mail.ru"], msg.as_string())
         smtpObj.quit()
 
 
@@ -189,4 +190,16 @@ if __name__ == "__main__":
 
     bank = MTS(bank_rec)
 
-    bank.send_org({}, None)
+    data_to_send = {
+        "Имя": "Иван",
+        "Отчество": "Иванович",
+        "Фамилия": "Иванов",
+        "Телефон": "+79056335029",
+        "Название": "ИП КБ",
+        "ИНН": "123123123123",
+        "Адрес": "123",
+        "Комментарий": "#ОфисБанка:МТС:Омская область:Омск:Омский операционный офис#",
+        "Номер": "332"
+    }
+
+    bank.send_org(data_to_send, None)
