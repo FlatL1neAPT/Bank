@@ -142,6 +142,7 @@ class MTS(Bank):
         region = fields[2]
         city = fields[3]
         office = fields[4]
+        email = fields[5]
 
         if region is None or city is None or office is None:
             raise Exception("Не удалось определить офис банка")
@@ -160,7 +161,7 @@ class MTS(Bank):
                """Название: {}\n"""\
                """ИНН: {}\n"""
 
-        text = text.format(org["Телефон"], "", region, city, office, org_type,
+        text = text.format(org["Телефон"], email, region, city, office, org_type,
                            org["Фамилия"] + ' ' + org["Имя"] + ' ' + org["Отчество"],
                            org["Название"], org["ИНН"])
 
