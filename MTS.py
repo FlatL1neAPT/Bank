@@ -1,4 +1,4 @@
-from Bank import Bank
+from Bank.Bank import Bank
 import json
 import requests
 import smtplib
