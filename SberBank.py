@@ -66,12 +66,12 @@ class SberBank(Bank):
         url = "https://ppapi.dasreda.ru/api/v1/order/new?merchant_id=39&product_" \
               "type=2&product_profile_id=53&vat_number=" + inn
 
-        res = requests.get(url, headers={'Authorization': "Token token=" + self.SID['id'], "UserId": "10965",
+        res = requests.get(url, headers={'Authorization': "Token token=" + self.SID['id'], "UserId": "12092",
                                          "UserTime": self.SID['time'], "Source": "ui"})
 
         if res.status_code == 401:
             self.SID['id'], self.SID['time'] = self._login("uliakravcenko523@gmail.com", "fJt4b2Knayc")
-            res = requests.get(url, headers={'Authorization': "Token token=" + self.SID['id'], "UserId": "10965",
+            res = requests.get(url, headers={'Authorization': "Token token=" + self.SID['id'], "UserId": "12092",
                                              "UserTime": self.SID['time'], "Source": "ui"})
 
         response = json.loads(res.text)
@@ -99,11 +99,11 @@ class SberBank(Bank):
         url = "https://ppapi.dasreda.ru/api/v1/merchant_branch_city?merchant_id=39&" \
               "merchant_branch_region_id={}&profile_id=56&is_active=1".format(int(region.get_number()) + 1)
 
-        res = requests.get(url, headers={'Authorization': "Token token=" + self.SID['id'], "UserId": "10965",
+        res = requests.get(url, headers={'Authorization': "Token token=" + self.SID['id'], "UserId": "12092",
                                          "UserTime": self.SID['time'], "Source": "ui"})
 
         if res.status_code == 401:
-            res = requests.get(url, headers={'Authorization': "Token token=" + self.SID['id'], "UserId": "10965",
+            res = requests.get(url, headers={'Authorization': "Token token=" + self.SID['id'], "UserId": "12092",
                                              "UserTime": self.SID['time'], "Source": "ui"})
 
         response = json.loads(res.text)
@@ -129,7 +129,7 @@ class SberBank(Bank):
         url = "https://ppapi.dasreda.ru/api/v1/merchant_branch_address?merchant_id=39&" \
               "merchant_branch_city_id={}&profile_id=56&is_active=1".format(city["id"])
 
-        res = requests.get(url, headers={'Authorization': "Token token=" + self.SID['id'], "UserId": "10965",
+        res = requests.get(url, headers={'Authorization': "Token token=" + self.SID['id'], "UserId": "12092",
                                          "UserTime": self.SID['time'], "Source": "ui"})
 
         response = json.loads(res.text)
@@ -221,7 +221,7 @@ class SberBank(Bank):
 
         body += "--" + boundary + "--\r\n"
         res = requests.post(url, data=body.encode(),
-                            headers={'Authorization': "Token token=" + self.SID['id'], "UserId": "10965",
+                            headers={'Authorization': "Token token=" + self.SID['id'], "UserId": "12092",
                                      "UserTime": self.SID['time'], "Source": "ui",
                                      "Content-Type": "multipart/form-data; boundary=" + boundary})
 
@@ -229,7 +229,7 @@ class SberBank(Bank):
             self.SID['id'], self.SID['time'] = self._login("uliakravcenko523@gmail.com", "fJt4b2Knayc")
 
             res = requests.post(url, data=body.encode(),
-                                headers={'Authorization': "Token token=" + self.SID['id'], "UserId": "10965",
+                                headers={'Authorization': "Token token=" + self.SID['id'], "UserId": "12092",
                                          "UserTime": self.SID['time'], "Source": "ui",
                                          "Content-Type": "multipart/form-data; boundary=" + boundary})
 
@@ -254,13 +254,13 @@ class SberBank(Bank):
         url = "https://ppapi.dasreda.ru/api/v1/merchant_branch_city?merchant_id=39&" \
               "merchant_branch_region_id={}&profile_id=56&is_active=1".format(int(region))
 
-        res = requests.get(url, headers={'Authorization': "Token token=" + self.SID['id'], "UserId": "10965",
+        res = requests.get(url, headers={'Authorization': "Token token=" + self.SID['id'], "UserId": "12092",
                                          "UserTime": self.SID['time'], "Source": "ui"})
 
         if res.status_code == 401:
             self.SID['id'], self.SID['time'] = self._login("uliakravcenko523@gmail.com", "fJt4b2Knayc")
 
-            res = requests.get(url, headers={'Authorization': "Token token=" + self.SID['id'], "UserId": "10965",
+            res = requests.get(url, headers={'Authorization': "Token token=" + self.SID['id'], "UserId": "12092",
                                              "UserTime": self.SID['time'], "Source": "ui"})
 
         response = json.loads(res.text)
@@ -282,13 +282,13 @@ class SberBank(Bank):
         url = "https://ppapi.dasreda.ru/api/v1/merchant_branch_address?merchant_id=39&" \
               "merchant_branch_city_id={}&profile_id=56&is_active=1".format(city)
 
-        res = requests.get(url, headers={'Authorization': "Token token=" + self.SID['id'], "UserId": "10965",
+        res = requests.get(url, headers={'Authorization': "Token token=" + self.SID['id'], "UserId": "12092",
                                          "UserTime": self.SID['time'], "Source": "ui"})
 
         if res.status_code == 401:
             self.SID['id'], self.SID['time'] = self._login("uliakravcenko523@gmail.com", "fJt4b2Knayc")
 
-            res = requests.get(url, headers={'Authorization': "Token token=" + self.SID['id'], "UserId": "10965",
+            res = requests.get(url, headers={'Authorization': "Token token=" + self.SID['id'], "UserId": "12092",
                                              "UserTime": self.SID['time'], "Source": "ui"})
 
         response = json.loads(res.text)
