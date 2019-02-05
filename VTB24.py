@@ -38,18 +38,26 @@ class VTB24(Bank):
         return True
 
     def is_in_odp(self, inn):
-        if self.Token is None:
-            self.Token = self.auth()
 
-        url = "https://mb-partner.bm.ru//anketa/anketa_exists_inn?inn=" + inn
+        def impl():
+            if self.Token is None:
+                self.Token = self.auth()
 
-        res = requests.get(url, headers={'Token': self.Token})
-        response = json.loads(res.text)
+            url = "https://mb-partner.bm.ru//anketa/anketa_exists_inn?inn=" + inn
 
-        if response["status_code"] == '13':
-            return False
+            res = requests.get(url, headers={'Token': self.Token})
+            response = json.loads(res.text)
 
-        return True
+            if response["status_code"] == '13':
+                return False
+
+            return True
+
+        try:
+            return impl()
+        except:
+            self.Token = None
+            return impl()
 
     def send_org(self, org, log):
 

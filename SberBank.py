@@ -61,7 +61,7 @@ class SberBank(Bank):
     def is_in_odp(self, inn):
 
         if self.SID['id'] is None:
-            self.SID['id'], self.SID['time'] = self._login("koromandeu@mail.ru", "09876qwE")
+            self.SID['id'], self.SID['time'] = self._login("uliakravcenko523@gmail.com", "fJt4b2Knayc")
 
         url = "https://ppapi.dasreda.ru/api/v1/order/new?merchant_id=39&product_" \
               "type=2&product_profile_id=53&vat_number=" + inn
@@ -70,7 +70,7 @@ class SberBank(Bank):
                                          "UserTime": self.SID['time'], "Source": "ui"})
 
         if res.status_code == 401:
-            self.SID['id'], self.SID['time'] = self._login("koromandeu@mail.ru", "09876qwE")
+            self.SID['id'], self.SID['time'] = self._login("uliakravcenko523@gmail.com", "fJt4b2Knayc")
             res = requests.get(url, headers={'Authorization': "Token token=" + self.SID['id'], "UserId": "10965",
                                              "UserTime": self.SID['time'], "Source": "ui"})
 
@@ -94,7 +94,7 @@ class SberBank(Bank):
             raise Exception(err)
 
         if self.SID['id'] is None:
-            self.SID['id'], self.SID['time'] = self._login("koromandeu@mail.ru", "09876qwE")
+            self.SID['id'], self.SID['time'] = self._login("uliakravcenko523@gmail.com", "fJt4b2Knayc")
 
         url = "https://ppapi.dasreda.ru/api/v1/merchant_branch_city?merchant_id=39&" \
               "merchant_branch_region_id={}&profile_id=56&is_active=1".format(int(region.get_number()) + 1)
@@ -226,7 +226,7 @@ class SberBank(Bank):
                                      "Content-Type": "multipart/form-data; boundary=" + boundary})
 
         if res.status_code == 401:
-            self.SID['id'], self.SID['time'] = self._login("koromandeu@mail.ru", "09876qwE")
+            self.SID['id'], self.SID['time'] = self._login("uliakravcenko523@gmail.com", "fJt4b2Knayc")
 
             res = requests.post(url, data=body.encode(),
                                 headers={'Authorization': "Token token=" + self.SID['id'], "UserId": "10965",
@@ -249,7 +249,7 @@ class SberBank(Bank):
 
     def get_work_region_city_list(self, region):
         if self.SID['id'] is None:
-            self.SID['id'], self.SID['time'] = self._login("koromandeu@mail.ru", "09876qwE")
+            self.SID['id'], self.SID['time'] = self._login("uliakravcenko523@gmail.com", "fJt4b2Knayc")
 
         url = "https://ppapi.dasreda.ru/api/v1/merchant_branch_city?merchant_id=39&" \
               "merchant_branch_region_id={}&profile_id=56&is_active=1".format(int(region))
@@ -258,7 +258,7 @@ class SberBank(Bank):
                                          "UserTime": self.SID['time'], "Source": "ui"})
 
         if res.status_code == 401:
-            self.SID['id'], self.SID['time'] = self._login("koromandeu@mail.ru", "09876qwE")
+            self.SID['id'], self.SID['time'] = self._login("uliakravcenko523@gmail.com", "fJt4b2Knayc")
 
             res = requests.get(url, headers={'Authorization': "Token token=" + self.SID['id'], "UserId": "10965",
                                              "UserTime": self.SID['time'], "Source": "ui"})
@@ -277,7 +277,7 @@ class SberBank(Bank):
     def get_work_region_city_office_list(self, region, city):
 
         if self.SID['id'] is None:
-            self.SID['id'], self.SID['time'] = self._login("koromandeu@mail.ru", "09876qwE")
+            self.SID['id'], self.SID['time'] = self._login("uliakravcenko523@gmail.com", "fJt4b2Knayc")
 
         url = "https://ppapi.dasreda.ru/api/v1/merchant_branch_address?merchant_id=39&" \
               "merchant_branch_city_id={}&profile_id=56&is_active=1".format(city)
@@ -286,7 +286,7 @@ class SberBank(Bank):
                                          "UserTime": self.SID['time'], "Source": "ui"})
 
         if res.status_code == 401:
-            self.SID['id'], self.SID['time'] = self._login("koromandeu@mail.ru", "09876qwE")
+            self.SID['id'], self.SID['time'] = self._login("uliakravcenko523@gmail.com", "fJt4b2Knayc")
 
             res = requests.get(url, headers={'Authorization': "Token token=" + self.SID['id'], "UserId": "10965",
                                              "UserTime": self.SID['time'], "Source": "ui"})
