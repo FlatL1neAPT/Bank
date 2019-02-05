@@ -165,16 +165,21 @@ class MTS(Bank):
                            org["Фамилия"] + ' ' + org["Имя"] + ' ' + org["Отчество"],
                            org["Название"], org["ИНН"])
 
-        smtpObj = smtplib.SMTP('smtp.mail.yahoo.com', 587)
-        smtpObj.starttls()
-        smtpObj.login('litrez007@yahoo.com', 'hj7Gsv4lOe')
+        url = "https://script.google.com/macros/s/AKfycbzcuzZkZ4cUmwsvKkgPOpm5p01UaSBd4nM-xaCYTaP35N8Qqmg/exec?subject={}&message={}".format("Профит сейл.Заявка {}".format(org["Номер"]), text)
+        res = requests.post(url, json={"subject": "123111", "message": "231111"})
 
-        msg = MIMEText(text, _charset="UTF-8")
-        msg["Subject"] = Header("Профит сейл.Заявка {}".format(org["Номер"])).encode()
+        i = 0
 
-        smtpObj.sendmail("litrez007@yahoo.com", ["koromandeu@mail.ru", "Rgusejnov@mtsbank.ru"], msg.as_string())
+        #smtpObj = smtplib.SMTP('smtp.mail.yahoo.com', 587)
+        #smtpObj.starttls()
+        #smtpObj.login('litrez007@yahoo.com', 'hj7Gsv4lOe')
+
+        #msg = MIMEText(text, _charset="UTF-8")
+        #msg["Subject"] = Header("Профит сейл.Заявка {}".format(org["Номер"])).encode()
+
+        #smtpObj.sendmail("litrez007@yahoo.com", ["koromandeu@mail.ru", "Rgusejnov@mtsbank.ru"], msg.as_string())
         #smtpObj.sendmail("litrez007@yahoo.com", ["koromandeu@mail.ru", "koroman100@mail.ru"], msg.as_string())
-        smtpObj.quit()
+        #smtpObj.quit()
 
 
 if __name__ == "__main__":
