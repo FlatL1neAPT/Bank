@@ -136,8 +136,6 @@ class MTS(Bank):
         end_pos = address.find("#")
 
         address = address[:end_pos]
-        comment = org["Комментарий"]
-        comment = comment.replace(address, "")
 
         fields = address.split(":")
 
@@ -145,6 +143,11 @@ class MTS(Bank):
         city = fields[3]
         office = fields[4]
         email = fields[5]
+
+        comment = org["Комментарий"]
+        start_pos = comment.find("#")
+        end_pos = comment.find("#", start_pos + 1)
+        comment = comment[:start_pos] + comment[end_pos + 1:]
 
         if region is None or city is None or office is None:
             raise Exception("Не удалось определить офис банка")
