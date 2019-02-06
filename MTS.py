@@ -136,6 +136,8 @@ class MTS(Bank):
         end_pos = address.find("#")
 
         address = address[:end_pos]
+        comment = org["Комментарий"]
+        comment = comment.replace(address, "")
 
         fields = address.split(":")
 
@@ -159,11 +161,12 @@ class MTS(Bank):
                """Организационно прововая форма: {}\n"""\
                """ФИО: {}\n"""\
                """Название: {}\n"""\
-               """ИНН: {}\n"""
+               """ИНН: {}\n"""\
+               """Комментарий: {}\n"""
 
         text = text.format(org["Телефон"], email, region, city, office, org_type,
                            org["Фамилия"] + ' ' + org["Имя"] + ' ' + org["Отчество"],
-                           org["Название"], org["ИНН"])
+                           org["Название"], org["ИНН"], comment)
 
         url = "https://script.google.com/macros/s/AKfycbzcuzZkZ4cUmwsvKkgPOpm5p01UaSBd4nM-xaCYTaP35N8Qqmg/exec?subject={}&message={}".format("Профит сейл.Заявка {}".format(org["Номер"]), text)
         res = requests.post(url, json={"subject": "123111", "message": "231111"})
