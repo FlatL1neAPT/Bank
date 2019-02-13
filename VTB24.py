@@ -193,6 +193,19 @@ class VTB24(Bank):
 
         return self.is_in_odp(inn)
 
+    def get_org_list(self, from_date, to_date):
+
+        if self.Token is None:
+            self.Token = self.auth()
+
+        url = "https://mb-partner.bm.ru/anketa?date_from={}&date_to={}&limit=200".format(from_date, to_date)
+
+        r = requests.get(url, headers={'Token': self.Token})
+        print(r.text)
+        res = json.loads(r.text)
+
+        return res["anketa_list"]['list']
+
 
 if __name__ == "__main__":
     from DataBase.DBController import DBController
