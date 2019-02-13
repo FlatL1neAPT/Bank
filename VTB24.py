@@ -71,7 +71,7 @@ class VTB24(Bank):
 
         if org["Комментарий"] is None or org["Комментарий"].find("#ОфисБанка:") == -1:
             log.write("Нет информации об отделении банка")
-            raise Exception("Нет информации об отделении банка")
+            return "Нет информации об отделении банка"
 
         address = org["Комментарий"]
         start_pos = address.find("#ОфисБанка:")
@@ -191,7 +191,7 @@ class VTB24(Bank):
 
     def is_in_odp_full(self, inn, phone):
 
-        return self.is_in_odp(inn)
+        return self.is_in_odp(inn)send_org
 
     def get_org_list(self, from_date, to_date):
 
