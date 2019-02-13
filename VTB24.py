@@ -63,7 +63,7 @@ class VTB24(Bank):
 
         if self.is_in_odp(org["ИНН"]):
             log.write("На момент отправки клиент в ОДП")
-            return "ВТБ: На момент отправки клиент в ОДП"
+            return "На момент отправки клиент в ОДП"
 
         region = None
         city = None
@@ -191,7 +191,7 @@ class VTB24(Bank):
 
     def is_in_odp_full(self, inn, phone):
 
-        return self.is_in_odp(inn)send_org
+        return self.is_in_odp(inn)
 
     def get_org_list(self, from_date, to_date):
 
