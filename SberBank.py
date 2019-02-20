@@ -5,6 +5,8 @@ import json
 import time
 import random
 import string
+from datetime import datetime
+from datetime import timedelta
 
 
 class SberBank(Bank):
@@ -305,3 +307,38 @@ class SberBank(Bank):
     def is_in_odp_full(self, inn, phone):
 
         return self.is_in_odp(inn)
+
+    def get_org_list(self, start_date, end_date):
+
+        if self.SID['id'] is None:
+            self.SID['id'], self.SID['time'] = self._login("uliakravcenko523@gmail.com", "fJt4b2Knayc")
+
+        start_date = start_date[6:] + "-" + start_date[3:5] + "-" + start_date[:2]
+
+        end_date = datetime.strptime(end_date, "%d.%m.%Y")
+        end_date = end_date - timedelta(days=1)
+        end_date = end_date.strftime("%Y-%m-%d")
+
+        url = "https://ppapi.dasreda.ru/api/v1/order?per_page=300&for_filters=1&merchant_id=39&from={}&to={}".\
+            format(start_date, end_date)
+
+        res = requests.get(url, headers={'Authorization': "Token token=" + self.SID['id'], "UserId": "12092",
+                                         "UserTime": self.SID['time'], "Source": "ui"})
+
+        if res.status_code == 401:
+            self.SID['id'], self.SID['time'] = self._login("uliakravcenko523@gmail.com", "fJt4b2Knayc")
+            res = requests.get(url, headers={'Authorization': "Token token=" + self.SID['id'], "UserId": "12092",
+                                             "UserTime": self.SID['time'], "Source": "ui"})
+
+        response = json.loads(res.text)
+
+        return response['entries']
+
+    def get_fio_by_contact(self, org, cur):
+        return org['contact_details'][0]['value'] + ' ' + org['contact_details'][1]['value'] + ' ' + org['contact_details'][2]['value']
+
+    def get_results_ids(self):
+        return [20000014499]
+
+    def get_scenario_id(self):
+        return [20000001128]

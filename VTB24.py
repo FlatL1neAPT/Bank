@@ -206,6 +206,15 @@ class VTB24(Bank):
 
         return res["anketa_list"]['list']
 
+    def get_fio_by_contact(self, org, cur):
+        return org['fields']['fio']['value']
+
+    def get_results_ids(self):
+        return [20000018436]
+
+    def get_scenario_id(self):
+        return [20000001410]
+
 
 if __name__ == "__main__":
     from DataBase.DBController import DBController
