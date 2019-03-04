@@ -55,7 +55,9 @@ class TinkoffBank(Bank):
         url = "https://origination.tinkoff.ru/api/v1/public/partner/scoring"
         data = {"inn": inn}
 
-        r = requests.post(url, json=data, headers=headers)
+        proxies = {'https': auth_data["Proxy"]}
+
+        r = requests.post(url, json=data, headers=headers, proxies=proxies)
         res = {}
 
         super().set_using_acc_data(acc_data)
