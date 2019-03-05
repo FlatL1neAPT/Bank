@@ -1,6 +1,7 @@
 from Bank.Bank import Bank
 import json
 import requests
+import time
 
 from datetime import datetime
 from datetime import timedelta
@@ -41,11 +42,12 @@ class TinkoffBank(Bank):
         else:
             return False
 
-    def is_in_odp_full(self, inn, phone):
+    def is_in_odp_full(self, inn, phone, acc_data):
 
-        acc_data = super().get_acc_data(7)
+        #acc_data = super().get_acc_data(7)
 
-        auth_data = json.loads(acc_data["Data"])
+        #auth_data = json.loads(acc_data["data"])
+        auth_data = acc_data["data"]
 
         print(auth_data["Название"])
 
@@ -64,7 +66,7 @@ class TinkoffBank(Bank):
 
         res = {}
 
-        super().set_using_acc_data(acc_data)
+        #super().set_using_acc_data(acc_data)
 
         try:
             res = json.loads(r.text)
@@ -150,3 +152,9 @@ class TinkoffBank(Bank):
 
     def get_scenario_id(self):
         return [20000000783, 20000001779]
+
+    def is_multithread_odp(self):
+        return True
+
+    def odp_delay(self):
+        time.sleep(5)

@@ -342,3 +342,9 @@ class SberBank(Bank):
 
     def get_scenario_id(self):
         return [20000001128]
+
+    def is_multithread_odp(self):
+        return False
+
+    def odp_delay(self):
+        pass

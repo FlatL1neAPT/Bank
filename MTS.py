@@ -187,6 +187,11 @@ class MTS(Bank):
         #smtpObj.sendmail("litrez007@yahoo.com", ["koromandeu@mail.ru", "koroman100@mail.ru"], msg.as_string())
         #smtpObj.quit()
 
+    def is_multithread_odp(self):
+        return False
+
+    def odp_delay(self):
+        pass
 
 if __name__ == "__main__":
     from DataBase.DBController import DBController

@@ -215,6 +215,12 @@ class VTB24(Bank):
     def get_scenario_id(self):
         return [20000001410]
 
+    def is_multithread_odp(self):
+        return False
+
+    def odp_delay(self):
+        pass
+
 
 if __name__ == "__main__":
     from DataBase.DBController import DBController
