@@ -57,7 +57,11 @@ class TinkoffBank(Bank):
 
         proxies = {'https': auth_data["Proxy"]}
 
-        r = requests.post(url, json=data, headers=headers, proxies=proxies)
+        try:
+            r = requests.post(url, json=data, headers=headers, proxies=proxies)
+        except Exception as e:
+            raise Exception("\nПрокси: " + auth_data["Proxy"] + "\n" + str(e))
+
         res = {}
 
         super().set_using_acc_data(acc_data)
