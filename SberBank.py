@@ -304,7 +304,7 @@ class SberBank(Bank):
 
         return res
 
-    def is_in_odp_full(self, inn, phone):
+    def is_in_odp_full(self, inn, phone, acc_data):
 
         return self.is_in_odp(inn)
 
