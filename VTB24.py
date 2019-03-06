@@ -201,7 +201,7 @@ class VTB24(Bank):
         url = "https://mb-partner.bm.ru/anketa?date_from={}&date_to={}&limit=200".format(from_date, to_date)
 
         r = requests.get(url, headers={'Token': self.Token})
-        print(r.text)
+        #print(r.text)
         res = json.loads(r.text)
 
         return res["anketa_list"]['list']
