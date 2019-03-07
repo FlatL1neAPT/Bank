@@ -71,6 +71,9 @@ class SberBank(Bank):
         res = requests.get(url, headers={'Authorization': "Token token=" + self.SID['id'], "UserId": "12092",
                                          "UserTime": self.SID['time'], "Source": "ui"})
 
+        if res.status_code == 422:
+            return True
+
         if res.status_code == 401:
             self.SID['id'], self.SID['time'] = self._login("uliakravcenko523@gmail.com", "fJt4b2Knayc")
             res = requests.get(url, headers={'Authorization': "Token token=" + self.SID['id'], "UserId": "12092",
