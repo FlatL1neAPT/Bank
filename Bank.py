@@ -51,10 +51,23 @@ class Bank:
         self.cur.execute("""UPDATE BankAccount SET LastUsing = NOW() WHERE ID = """ + str(acc_data["ID"]) )
         self.controller.save_changes()
 
+    def organization_in_process(self, org_id):
+
+        self.cur.execute("""SELECT ID FROM Organization_Bank_CallCenter 
+                            WHERE Organization = %s AND Bank = %s AND CallCenter = 1;""",
+                         (org_id, self.rec["ID"]))
+
+        org_list = self.cur.fetchall()
+
+        if len(org_list) > 0:
+            return True
+
+        return False
+
     def apeend_organization(self, org_id):
 
         self.cur.execute("""INSERT INTO Organization_Bank_CallCenter (Organization, Bank, CallCenter) 
-                            VALUES (%s,%s, 1)""",
+                            VALUES (%s,%s, 1);""",
                          (org_id, self.rec["ID"]))
 
         self.controller.save_changes()
