@@ -322,20 +322,33 @@ class SberBank(Bank):
         end_date = end_date - timedelta(days=1)
         end_date = end_date.strftime("%Y-%m-%d")
 
-        url = "https://ppapi.dasreda.ru/api/v1/order?per_page=300&for_filters=1&merchant_id=39&from={}&to={}".\
-            format(start_date, end_date)
+        result = []
 
-        res = requests.get(url, headers={'Authorization': "Token token=" + self.SID['id'], "UserId": "12092",
-                                         "UserTime": self.SID['time'], "Source": "ui"})
+        is_complete = False
+        offset = 1
+        limit = 30
 
-        if res.status_code == 401:
-            self.SID['id'], self.SID['time'] = self._login("uliakravcenko523@gmail.com", "fJt4b2Knayc")
+        while not is_complete:
+            url = "https://ppapi.dasreda.ru/api/v1/order?per_page={}&page={}&for_filters=1&merchant_id=39&from={}&to={}".\
+                format(limit, offset, start_date, end_date)
+
             res = requests.get(url, headers={'Authorization': "Token token=" + self.SID['id'], "UserId": "12092",
                                              "UserTime": self.SID['time'], "Source": "ui"})
 
-        response = json.loads(res.text)
+            if res.status_code == 401:
+                self.SID['id'], self.SID['time'] = self._login("uliakravcenko523@gmail.com", "fJt4b2Knayc")
+                res = requests.get(url, headers={'Authorization': "Token token=" + self.SID['id'], "UserId": "12092",
+                                                 "UserTime": self.SID['time'], "Source": "ui"})
 
-        return response['entries']
+            response = json.loads(res.text)
+            result += response['entries']
+
+            if len(response['entries']) < limit:
+                is_complete = True
+            else:
+                offset += 1
+
+        return result
 
     def get_fio_by_contact(self, org, cur):
         return org['contact_details'][0]['value'] + ' ' + org['contact_details'][1]['value'] + ' ' + org['contact_details'][2]['value']

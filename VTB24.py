@@ -198,13 +198,28 @@ class VTB24(Bank):
         if self.Token is None:
             self.Token = self.auth()
 
-        url = "https://mb-partner.bm.ru/anketa?date_from={}&date_to={}&limit=200".format(from_date, to_date)
+        is_complete = False
 
-        r = requests.get(url, headers={'Token': self.Token})
-        #print(r.text)
-        res = json.loads(r.text)
+        result = []
+        offset = 0
+        limit = 200
 
-        return res["anketa_list"]['list']
+        while not is_complete:
+            url = "https://mb-partner.bm.ru/anketa?date_from={}&date_to={}&limit={}&start={}".format(from_date, to_date, limit, offset)
+
+            r = requests.get(url, headers={'Token': self.Token})
+            #print(r.text)
+            res = json.loads(r.text)
+
+            result += res["anketa_list"]['list']
+
+            if len(res["anketa_list"]['list']) < limit:
+                is_complete = True
+            else:
+                offset += limit
+
+
+        return result
 
     def get_fio_by_contact(self, org, cur):
         return org['fields']['fio']['value']
