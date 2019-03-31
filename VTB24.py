@@ -46,6 +46,10 @@ class VTB24(Bank):
             url = "https://mb-partner.bm.ru//anketa/anketa_exists_inn?inn=" + inn
 
             res = requests.get(url, headers={'Token': self.Token})
+
+            if res.status_code != 200:
+                raise Exception("Возврат не 200")
+
             response = json.loads(res.text)
 
             if response["status_code"] == '13':

@@ -42,6 +42,28 @@ class TinkoffBank(Bank):
         else:
             return False
 
+    def get_odp_status(self, inn):
+
+        url = "https://origination.tinkoff.ru/api/v1/public/partner/innScoring"
+
+        r = requests.post(url, json={"inn": inn}, headers=self.headers)
+        res = json.loads(r.text)
+
+        score_id = res["result"]["scoreId"]
+
+        is_ready = False
+
+        while not is_ready:
+            url = "https://origination.tinkoff.ru/api/v1/public/partner/innScoring/{}".format(score_id)
+
+            r = requests.get(url, headers=self.headers)
+            res = json.loads(r.text)
+
+            is_ready = res['result']['isReady']
+
+            if is_ready:
+                return res['result']['result']
+
     def is_in_odp_full(self, inn, phone, acc_data):
 
         #acc_data = super().get_acc_data(7)
