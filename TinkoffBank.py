@@ -42,14 +42,17 @@ class TinkoffBank(Bank):
         else:
             return False
 
-    def get_odp_status(self, inn):
+    def get_score_id(self, inn):
 
         url = "https://origination.tinkoff.ru/api/v1/public/partner/innScoring"
 
         r = requests.post(url, json={"inn": inn}, headers=self.headers)
         res = json.loads(r.text)
 
-        score_id = res["result"]["scoreId"]
+        return res["result"]["scoreId"]
+
+
+    def get_odp_status(self, score_id):
 
         is_ready = False
 
