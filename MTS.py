@@ -1,12 +1,10 @@
 from Bank.Bank import Bank
 import json
 import requests
-import smtplib
 
-from email.mime.text import MIMEText
-from email.header import Header
 
 class MTS(Bank):
+
     city_list = {
         "93395": {
             "name": "Амурск",
@@ -623,9 +621,14 @@ class MTS(Bank):
         }
     }
 
-
     def __init__(self, rec):
         super().__init__(rec)
+
+        self.auth_data = None
+        ad = self.auth_data()
+
+        if ad is not None:
+            self.auth_data = json.loads(ad)
 
     def is_allow_uncorrect_address(self):
         return True
@@ -731,7 +734,6 @@ class MTS(Bank):
 
     def get_work_region_city_office_list(self, region, city):
 
-
         res = []
 
         for branch in MTS.city_list[city]["office"]:
@@ -740,7 +742,105 @@ class MTS(Bank):
 
         return res
 
+    def _login(self):
+        url = "https://{}.amocrm.ru/private/api/auth.php?type=json".format(self.auth_data["ACCOUNT"])
+        data = {
+            "USER_LOGIN": self.auth_data["LOGIN"],
+            "USER_HASH": self.auth_data["HASH"]
+        }
+
+        r = requests.post(url, json=data)
+        json.loads(r.text)
+
+        self.auth_data["cookies"] = r.cookies.get_dict()
+        self.save_auth_data(json.dumps(self.auth_data))
+
     def send_org(self, org, log):
+
+        city = None
+        office = None
+
+        if org["Комментарий"] is None or org["Комментарий"].find("#ОфисБанка:") == -1:
+            log.write("Нет информации об отделении банка")
+            raise Exception("Нет информации об отделении банка")
+
+        address = org["Комментарий"]
+        start_pos = address.find("#ОфисБанка:")
+        address = org["Комментарий"][start_pos + 1:]
+        end_pos = address.find("#")
+
+        address = address[:end_pos]
+
+        fields = address.split(":")
+
+        city = fields[2]
+        office = fields[3]
+        email = fields[4]
+
+        comment = org["Комментарий"]
+        start_pos = comment.find("#")
+        end_pos = comment.find("#", start_pos + 1)
+        comment = comment[:start_pos] + comment[end_pos + 1:]
+
+        if city is None or office is None:
+            raise Exception("Не удалось определить офис банка")
+
+        if self.auth_data["cookies"] is None or self.auth_data["cookies"] == "":
+            self._login()
+
+        url = "https://{}.amocrm.ru/api/v2/companies".format(self.auth_data["ACCOUNT"])
+
+        phones = org["Телефон"].split("|")
+
+        org_type = "ООО"
+        if len(org["ИНН"]) == 12:
+            org_type = "ИП"
+
+        data = {
+            "add": [{
+                "name": org["Название"],
+                "custom_fields": [{
+                    "id": "51213",
+                    "values": [{"value": phones[0], "enum": "WORK"}]
+                }, {
+                    "id": "51215",
+                    "values": [{"value": email, "enum": "WORK"}]
+                }, {
+                    "id": "54059",
+                    "values": [{"value": org["ИНН"]}]
+                }, {
+                    "id": "63065",
+                    "values": [{"value": org["Фамилия"] + ' ' + org["Имя"] + ' ' + org["Отчество"]}]
+                }, {
+                    "id": "63067",
+                    "values": [{"value": org_type, "enum": org_type}]
+                }, {
+                    "id": "63123",
+                    "values": [{"value": MTS.city_list[city]["name"], "enum": MTS.city_list[city]["name"]}]
+                }, {
+                    "id": "63321",
+                    "values": [{"value": comment}]
+                }, {
+                    "id": "63667",
+                    "values": [{"value": "Новая", "enum": "Новая"}]
+                }, {
+                    "id": "70965",
+                    "values": [{"value": MTS.city_list[city]["office"][office]["name"],
+                                "enum": MTS.city_list[city]["office"][office]["name"]}]
+                }]
+            }
+            ]
+        }
+
+        log.write(str(data) + "\n")
+        log.flush()
+
+        r = requests.post(url, json=data, cookies=self.auth_data["cookies"])
+
+        log.write(r.text + "\n")
+        log.flush()
+
+    def send_org_old(self, org, log):
 
         region = None
         city = None
