@@ -624,11 +624,13 @@ class MTS(Bank):
     def __init__(self, rec):
         super().__init__(rec)
 
-        self.auth_data = None
-        ad = self.auth_data()
+        try:
+            ad = rec["AuthData"]
 
-        if ad is not None:
-            self.auth_data = json.loads(ad)
+            if ad is not None:
+                self.auth_data = json.loads(ad)
+        except Exception as e:
+            raise e
 
     def is_allow_uncorrect_address(self):
         return True
