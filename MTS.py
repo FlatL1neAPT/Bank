@@ -360,7 +360,7 @@ class MTS(Bank):
             }
         },
         "93459": {
-            "name": "Санкт-петербург",
+            "name": "Санкт Петербург",
             "office": {
                 "104283": {
                     "name": "ГОФ Санкт-Петербург",
@@ -818,7 +818,8 @@ class MTS(Bank):
                     "values": [{"value": org_type, "enum": org_type}]
                 }, {
                     "id": "63123",
-                    "values": [{"value": MTS.city_list[city]["name"], "enum": MTS.city_list[city]["name"]}]
+                    "values": [{"value": MTS.city_list[city]["name"],
+                                "enum": MTS.city_list[city]["name"]}]
                 }, {
                     "id": "63321",
                     "values": [{"value": comment}]
@@ -838,6 +839,10 @@ class MTS(Bank):
         log.flush()
 
         r = requests.post(url, json=data, cookies=self.auth_data["cookies"])
+
+        if r.status_code == 401:
+            self._login()
+            r = requests.post(url, json=data, cookies=self.auth_data["cookies"])
 
         log.write(r.text + "\n")
         log.flush()
