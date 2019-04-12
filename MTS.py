@@ -1,4 +1,5 @@
 from Bank.Bank import Bank
+from datetime import datetime
 import json
 import requests
 
@@ -756,6 +757,34 @@ class MTS(Bank):
 
         self.auth_data["cookies"] = r.cookies.get_dict()
         self.save_auth_data(json.dumps(self.auth_data))
+
+    def get_scenario_id(self):
+        return [20000001780]
+
+    def get_results_ids(self):
+        return [20000023527]
+
+    def get_fio_by_contact(self, org, cur):
+        return org["custom_fields"][2]["values"][0]["value"]
+
+    def get_org_list(self, start_date, end_date):
+
+        start_date = datetime.strptime(start_date, "%d.%m.%Y")
+        start_date = start_date.strftime("%A, %b %d %Y") + " 00:00:00 UTC"
+
+        if self.auth_data["cookies"] is None or self.auth_data["cookies"] == "":
+            self._login()
+
+        url = "https://{}.amocrm.ru/api/v2/companies".format(self.auth_data["ACCOUNT"])
+
+        r = requests.get(url, cookies=self.auth_data["cookies"], headers={"IF-MODIFIED-SINCE": start_date})
+
+        if r.status_code == 401:
+            self._login()
+            r = requests.get(url, cookies=self.auth_data["cookies"], headers={"IF-MODIFIED-SINCE": start_date})
+
+        res = json.loads(r.text)
+        return res["_embedded"]["items"]
 
     def send_org(self, org, log):
 
