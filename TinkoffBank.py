@@ -44,9 +44,12 @@ class TinkoffBank(Bank):
 
     def get_score_id(self, inn):
 
+        headers = {
+            'Authorization': """Partner-Basic api-key="8d193e13-186c-4033-a91b-0059999eca69", api-secret="X8YHQFCYUCSDGT8M", agent-id="c9262715-5f2e-4d0f-a114-179add09bd59" """}
+
         url = "https://origination.tinkoff.ru/api/v1/public/partner/innScoring"
 
-        r = requests.post(url, json={"inn": inn}, headers=self.headers)
+        r = requests.post(url, json={"inn": inn}, headers=headers)
         res = json.loads(r.text)
 
         return res["result"]["scoreId"]
@@ -54,18 +57,24 @@ class TinkoffBank(Bank):
 
     def get_odp_status(self, score_id):
 
+        headers = {
+            'Authorization': """Partner-Basic api-key="8d193e13-186c-4033-a91b-0059999eca69", api-secret="X8YHQFCYUCSDGT8M", agent-id="c9262715-5f2e-4d0f-a114-179add09bd59" """}
+
         is_ready = False
 
         while not is_ready:
             url = "https://origination.tinkoff.ru/api/v1/public/partner/innScoring/{}".format(score_id)
 
-            r = requests.get(url, headers=self.headers)
-            res = json.loads(r.text)
+            try:
+                r = requests.get(url, headers=headers)
+                res = json.loads(r.text)
 
-            is_ready = res['result']['isReady']
+                is_ready = res['result']['isReady']
 
-            if is_ready:
-                return res['result']['result']
+                if is_ready:
+                    return res['result']['result']
+            except:
+                pass
 
     def is_in_odp_full(self, inn, phone, acc_data):
 

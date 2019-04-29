@@ -949,6 +949,35 @@ class MTS(Bank):
     def odp_delay(self):
         pass
 
+    def extend_passport_data(self, passport, debug=False):
+
+        url = "http://194.48.97.156:8085/cgi-bin/proxy.py"
+
+        SERVER = "localhost:8186"
+        AUTH = "370a12e0279e89dfa8a9079ca63e4b92e5ccf720"
+        CUST_ID = "52"
+        URL = "http://{}/api/v1/search-by-passport/{}"
+
+        if debug:
+            AUTH = "0a83d13db7eab4e63de427b30b33cb997715bdf9"
+            URL = "http://{}/api/test/search-by-passport/{}"
+            passport = "8110374921"
+
+        data = {
+            "url": URL.format(SERVER, passport),
+            "method": "POST",
+            "headers": {
+                "X-Authorization": AUTH,
+                "X-Customer-Id": CUST_ID
+            },
+            "json": None
+        }
+
+        r = requests.post(url, json=data)
+
+        return json.loads(r.text)
+
+
 if __name__ == "__main__":
     from DataBase.DBController import DBController
 
