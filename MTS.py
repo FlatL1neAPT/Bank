@@ -956,11 +956,11 @@ class MTS(Bank):
         SERVER = "localhost:8186"
         AUTH = "370a12e0279e89dfa8a9079ca63e4b92e5ccf720"
         CUST_ID = "52"
-        URL = "http://{}/api/v1/search-by-passport/{}"
+        URL = "http://{}/api/v1/search-by-passport/{}?limit=1&filter-active=true"
 
         if debug:
             AUTH = "0a83d13db7eab4e63de427b30b33cb997715bdf9"
-            URL = "http://{}/api/test/search-by-passport/{}"
+            URL = "http://{}/api/test/search-by-passport/{}?limit=1&filter-active=true"
             passport = "8110374921"
 
         data = {
