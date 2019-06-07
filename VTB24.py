@@ -27,7 +27,7 @@ class VTB24(Bank):
 
         url = "https://mb-partner.bm.ru/auth/ident"
 
-        res = requests.post(url, headers={'Token': Token, "Date": date})
+        res = requests.post(url, headers={'Token': Token, "Date": date}, verify=False)
 
         response = json.loads(res.text)
 
@@ -45,7 +45,7 @@ class VTB24(Bank):
 
             url = "https://mb-partner.bm.ru//anketa/anketa_exists_inn?inn=" + inn
 
-            res = requests.get(url, headers={'Token': self.Token})
+            res = requests.get(url, headers={'Token': self.Token}, verify=False)
 
             if res.status_code != 200:
                 raise Exception("Возврат не 200")
@@ -98,7 +98,7 @@ class VTB24(Bank):
 
         url = "https://mb-partner.bm.ru/anketa/add"
 
-        res = requests.post(url, headers={'Token': self.Token})
+        res = requests.post(url, headers={'Token': self.Token}, verify=False)
         add_response = json.loads(res.text)
 
         body = {
@@ -119,12 +119,12 @@ class VTB24(Bank):
         log.write(str(body))
 
         res = requests.post(url, data="anketaid=" + add_response["id_anketa"] + "&anketadata=" + quote(json.dumps(body)),
-                            headers={'Token': self.Token, 'Content-Type': 'application/x-www-form-urlencoded'})
+                            headers={'Token': self.Token, 'Content-Type': 'application/x-www-form-urlencoded'}, verify=False)
 
         url = "https://mb-partner.bm.ru/anketa/" + add_response["id_anketa"] + "/apply"
 
         res = requests.post(url, data="id=" + add_response["id_anketa"],
-                            headers={'Token': self.Token, 'Content-Type': 'application/x-www-form-urlencoded'})
+                            headers={'Token': self.Token, 'Content-Type': 'application/x-www-form-urlencoded'}, verify=False)
 
         log.write("Результат" + str(res))
         log.write(res.text)
@@ -137,7 +137,7 @@ class VTB24(Bank):
 
             url = "https://mb-partner.bm.ru/misc/regions"
 
-            res = requests.get(url, headers={'Token': self.Token})
+            res = requests.get(url, headers={'Token': self.Token}, verify=False)
             response = json.loads(res.text)
 
             res = []
@@ -159,7 +159,7 @@ class VTB24(Bank):
 
         url = "https://mb-partner.bm.ru/misc/cities?region_code=" + region
 
-        res = requests.get(url, headers={'Token': self.Token})
+        res = requests.get(url, headers={'Token': self.Token}, verify=False)
         response = json.loads(res.text)
 
         res = []
@@ -179,7 +179,7 @@ class VTB24(Bank):
 
         url = "https://mb-partner.bm.ru//misc/branch/" + region + "?city_id=" + city
 
-        res = requests.get(url, headers={'Token': self.Token})
+        res = requests.get(url, headers={'Token': self.Token}, verify=False)
         response = json.loads(res.text)
 
         res = []
@@ -211,7 +211,7 @@ class VTB24(Bank):
         while not is_complete:
             url = "https://mb-partner.bm.ru/anketa?date_from={}&date_to={}&limit={}&start={}".format(from_date, to_date, limit, offset)
 
-            r = requests.get(url, headers={'Token': self.Token})
+            r = requests.get(url, headers={'Token': self.Token}, verify=False)
             #print(r.text)
             res = json.loads(r.text)
 
