@@ -103,7 +103,7 @@ class Bank:
 
     def is_region_allow(self, address, inn=None):
 
-        if address is not None:
+        if address is not None and address != "":
             if not Region.is_adress_correct(address):
                 if self.is_allow_uncorrect_address():
                     return True
