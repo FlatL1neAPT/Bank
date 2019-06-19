@@ -40,8 +40,9 @@ class Bank:
 
         acc_list = []
 
-        while(len(acc_list) == 0):
-            self.cur.execute("""SELECT * FROM BankAccount WHERE TIMESTAMPDIFF( SECOND, LastUsing, NOW()) > 10 AND Bank = {};""".format(id))
+        while len(acc_list) == 0:
+            self.cur.execute("""SELECT * FROM BankAccount 
+                                WHERE TIMESTAMPDIFF( SECOND, LastUsing, NOW()) > 10 AND Bank = {};""".format(id))
             acc_list = self.cur.fetchall()
 
         return acc_list[0]
@@ -115,6 +116,8 @@ class Bank:
             for region in self.regions:
                 if region.address_in_region(address):
                     return True
+
+            return False
 
         if inn is not None:
 

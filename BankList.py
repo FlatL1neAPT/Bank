@@ -39,6 +39,10 @@ class BankList:
 
 
 if __name__ == "__main__":
-    for bank in BankList.get():
-        res = bank.is_region_allow("629320,ЯМАЛО-НЕНЕЦКИЙ АВТОНОМНЫЙ ОКРУГ, ,НОВЫЙ УРЕНГОЙ ГОРОД, ,МИРА ПРОСПЕКТ,ДОМ 32, ,КВАРТИРА 129")
-        bank.is_in_odp("390507916036")
+    import sys
+
+    sys.path.append("../")
+    bank = BankList.get_by_name("МТС")
+
+    res = bank.is_region_allow("171385,ТВЕРСКАЯ ОБЛАСТЬ,СТАРИЦКИЙ РАЙОН, ,БОЛЬШИЕ ЛЕДИНКИ ДЕРЕВНЯ, ,ДОМ 2А, ,КВАРТИРА 2", "505198256549")
+
