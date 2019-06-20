@@ -195,7 +195,7 @@ class TinkoffBank(Bank):
         return [20000000783, 20000001779]
 
     def is_multithread_odp(self):
-        return False
+        return True
 
     def is_pre_check_odp(self):
         return True
