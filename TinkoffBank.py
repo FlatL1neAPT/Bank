@@ -205,3 +205,70 @@ class TinkoffBank(Bank):
 
     def odp_delay(self):
         pass
+
+    def send_org(self, org, log, product="РКО"):
+        url = "https://origination.tinkoff.ru/api/v1/public/partner/createApplication"
+
+        phones = org["Телефон"].split("|")
+
+        if len(org["ИНН"]) == 11 or len(org["ИНН"]) == 9:
+            org["ИНН"] = "0" + org["ИНН"]
+
+        data = {
+           "product": product,
+           "source": "Федеральные партнеры",
+           "subsource": "API",
+           "firstName": org["Имя"],
+           "middleName": org["Отчество"],
+           "lastName": org["Фамилия"],
+           "phoneNumber": phones[0],
+           "isHot": org["Горячий"],
+           "companyName": org["Название"],
+           "innOrOgrn": org["ИНН"],
+           "comment": org["Комментарий"],
+           "temperature": org["temperature"]
+        }
+
+        if product == "Оборотный кредит" and org["Комментарий"] is not None:
+            comment = org["Комментарий"]
+            start_pos = comment.find("#")
+            comment = comment[start_pos + 1:]
+            end_pos = comment.find("#")
+
+            comment = comment[:end_pos]
+            comment = json.loads(comment)
+
+            data["products"] = [{
+                "partNumber": "TFLL1.1",
+                "term": comment["СрокКредита"],
+                "termType": "Месяцы",
+                "currency": "RUR",
+                "paymentInfo": {
+                    "clientAmount": comment["СуммаКредита"]
+                }
+            }]
+
+            data["comment"] = ""
+
+        log.write(str(data) + "\n")
+        log.flush()
+
+        r = requests.post(url, json=data, headers=self.headers)
+        log.write(r.text + "\n")
+
+        if r.status_code != 200:
+            res = json.loads(r.text)
+
+            return {'error': r.text}
+
+        res = json.loads(r.text)
+
+        try:
+            return {'ID': res['result']['applicationId']}
+        except:
+            pass
+
+        if 'errorCode' in res:
+            return {'error': res['errorMessage']}
+
+        return None
