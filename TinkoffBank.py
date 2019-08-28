@@ -20,6 +20,10 @@ class TinkoffBank(Bank):
         r = requests.post(url, json=data, headers=self.headers)
         print(r.text)
 
+    def set_auth_data(self, data):
+        self.headers = {'Authorization': """Partner-Basic api-key="{}", api-secret="{}", agent-id="{}" """.
+            format(data["api-key"], data["api-secret"], data["agent-id"])}
+
     def is_allow_uncorrect_address(self):
         return True
 
