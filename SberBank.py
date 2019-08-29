@@ -13,6 +13,8 @@ class SberBank(Bank):
 
     def __init__(self, rec):
         self.SID = {"id": None, "time": None}
+        self.merchant_id = 50
+        self.headers = {"Authorization": "Token token={}".format("c69d620363833f3a586f4beeb7b9df45")}
         super().__init__(rec)
 
         ad = self.auth_data()
@@ -21,6 +23,8 @@ class SberBank(Bank):
             self.SID = json.loads(ad)
 
     def _login(self, username, password):
+
+
         request = {"data": {
             "username": username,
             "password": password
@@ -243,6 +247,25 @@ class SberBank(Bank):
 
     def get_work_region_list(self):
 
+        #url = "https://ppapi.dev.dasreda.ru/api/v1/sber_mq/region?with_merchant_branches={}".format(self.merchant_id)
+        url = "https://ppapi.dev.dasreda.ru/api/v1/sber_mq/region?page={}"
+        page = 1
+        res = []
+
+        while page != -1:
+            region_list_row = requests.get(url.format(page), headers=self.headers)
+            region_list = json.loads(region_list_row.text)
+
+            for region in region_list['entries']:
+                res.append({'ID': region['id'], 'name': region['name']})
+
+            if len(res) >= region_list['total_entries']:
+                page = -1
+            else:
+                page += 1
+
+        return res
+
         region_list = self.region_list()
 
         res = []
@@ -253,6 +276,32 @@ class SberBank(Bank):
         return res
 
     def get_work_region_city_list(self, region):
+
+        url = "https://ppapi.dev.dasreda.ru/api/v1/sber_mq/city?region_id={}&page=".format(region)
+        url += "{}"
+
+        page = 1
+        res = []
+
+        while page != -1:
+            city_list_row = requests.get(url.format(page), headers=self.headers)
+            city_list = json.loads(city_list_row.text)
+
+            for city in city_list['entries']:
+                res.append({'ID': city['id'], 'name': city['name']})
+
+            if len(res) >= city_list['total_entries']:
+                page = -1
+            else:
+                page += 1
+
+        return res
+
+        city_list_row = requests.get(url, headers=self.headers)
+
+        city_list = json.loads(city_list_row.text)
+
+
         if self.SID['id'] is None:
             self.SID['id'], self.SID['time'] = self._login("uliakravcenko523@gmail.com", "fJt4b2Knayc")
 
@@ -280,6 +329,18 @@ class SberBank(Bank):
         return res
 
     def get_work_region_city_office_list(self, region, city):
+
+        url = "https://ppapi.dev.dasreda.ru/api/v1/sber_mq/merchant_branch?city_id={}&region_id={}".format(city, region)
+
+        office_list_row = requests.get(url, headers=self.headers)
+
+        office_list = json.loads(office_list_row.text)
+        res = []
+
+        for office in office_list['entries']:
+            res.append({'ID': office["id"], 'name': office["name"]})
+
+        return res
 
         if self.SID['id'] is None:
             self.SID['id'], self.SID['time'] = self._login("uliakravcenko523@gmail.com", "fJt4b2Knayc")
@@ -364,3 +425,19 @@ class SberBank(Bank):
 
     def odp_delay(self):
         pass
+
+if __name__ == "__main__":
+    from DataBase.DBController import DBController
+    controller = DBController()
+    cur = controller.get_cursor()
+
+    cur.execute("""SELECT * From Bank WHERE Name = %s;""", ("Сбербанк",))
+
+    bank_list = cur.fetchall()
+
+    bank_rec = bank_list[0]
+
+    bank = SberBank(bank_rec)
+    #bank.get_work_region_list()
+    #bank.get_work_region_city_list("173")
+    bank.get_work_region_city_office_list("173", "2571")
