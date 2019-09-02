@@ -102,7 +102,19 @@ class Bank:
     def region_list(self):
         return self.regions
 
-    def is_region_allow(self, address, inn=None):
+    def is_region_allow(self, address, inn=None, ogrn=None):
+
+        if ogrn is not None:
+            try:
+                region_id = inn[3:5]
+
+                for region in self.regions:
+                    if region.get_number() == region_id:
+                        return True
+
+                return False
+            except:
+                pass
 
         address = Region.normalize_address(address)
 
