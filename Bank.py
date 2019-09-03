@@ -102,6 +102,20 @@ class Bank:
     def region_list(self):
         return self.regions
 
+    def is_region_allow2(self, region):
+
+        if region is None:
+            if self.is_allow_uncorrect_address():
+                return True
+            else:
+                return False
+
+        for self_region in self.regions:
+            if region.get_number() == self_region.get_number():
+                return True
+
+        return False
+
     def is_region_allow(self, address, inn=None, ogrn=None):
 
         if ogrn is not None:
