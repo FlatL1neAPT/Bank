@@ -74,6 +74,7 @@ class SberBank(Bank):
         }
 
         res = requests.post(url, headers=self.headers, json={"data": data})
+        print(res)
 
         res = json.loads(res.text)
 
