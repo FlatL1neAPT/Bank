@@ -65,7 +65,6 @@ class TinkoffBank(Bank):
 
         return None
 
-
     def get_odp_status(self, score_id):
 
         headers = {
@@ -211,6 +210,34 @@ class TinkoffBank(Bank):
         pass
 
     def send_org(self, org, log, product="РКО"):
+
+        params = None
+
+        comment = org["Комментарий"]
+        start_pos = comment.find("#")
+
+        if start_pos != -1:
+            comment = comment[start_pos + 1:]
+            end_pos = comment.find("#")
+
+            if end_pos != -1:
+
+                comment = comment[:end_pos]
+                params = json.loads(comment)
+
+        if params is None or product != "РКО":
+            return [self._send_org(org, log, product)]
+        else:
+            org["Комментарий"] = params["Комментарий"]
+
+            res_list = []
+
+            for prod in params["Список продуктов"]:
+                res_list.append(self._send_org(org, log, prod))
+
+            return res_list
+
+    def _send_org(self, org, log, product="РКО"):
         url = "https://origination.tinkoff.ru/api/v1/public/partner/createApplication"
 
         phones = org["Телефон"].split("|")
@@ -276,3 +303,21 @@ class TinkoffBank(Bank):
             return {'error': res['errorMessage']}
 
         return None
+
+if __name__ == "__main__":
+    from DataBase.DBController import DBController
+    controller = DBController()
+    cur = controller.get_cursor()
+
+    cur.execute("""SELECT * From Bank WHERE Name = %s;""", ("Тинькофф",))
+
+    bank_list = cur.fetchall()
+
+    bank_rec = bank_list[0]
+
+    bank = TinkoffBank(bank_rec)
+
+    test = bank.get_org_list("22.09.2019", "24.09.2019")
+
+    pass
+
