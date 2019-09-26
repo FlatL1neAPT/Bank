@@ -233,6 +233,7 @@ class TinkoffBank(Bank):
             res_list = []
 
             for prod in params["Список продуктов"]:
+
                 res_list.append(self._send_org(org, log, prod))
 
             return res_list
