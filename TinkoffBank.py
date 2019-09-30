@@ -14,12 +14,6 @@ class TinkoffBank(Bank):
 
         self.headers = {'Authorization': """Partner-Basic api-key="0a81e744-c20e-4105-9359-1d8eeebd8c07", api-secret="0OOUQ1BCWOF4X2AJ", agent-id="c9262715-5f2e-4d0f-a114-179add09bd59" """}
 
-        url = "https://origination.tinkoff.ru/api/v1/partner/createApplication"
-
-        data = {"Hello": "World"}
-        r = requests.post(url, json=data, headers=self.headers)
-        print(r.text)
-
     def set_auth_data(self, data):
         self.headers = {'Authorization': """Partner-Basic api-key="{}", api-secret="{}", agent-id="{}" """.
                        format(data["api-key"], data["api-secret"], data["agent-id"])}
