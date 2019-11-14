@@ -129,6 +129,13 @@ class VTB24(Bank):
         log.write("Результат" + str(res))
         log.write(res.text)
 
+        try:
+            res = json.loads(res.text)
+            if "status_code" in res and res["status_code"] == '8':
+                return res["info"]
+        except:
+            pass
+
     def get_work_region_list(self):
 
         def impl():
