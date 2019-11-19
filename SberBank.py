@@ -542,21 +542,21 @@ class SberBank(Bank):
 
         res = ""
 
-        region_list = self.old_get_work_region_list()
+        region_list = self._old_get_work_region_list()
 
         for region in region_list:
             if region["ID"] == int(r):
                 res += region["name"] + "\n"
                 break
 
-        city_list = self.old_get_work_region_city_list(r)
+        city_list = self._old_get_work_region_city_list(r)
 
         for city in city_list:
             if city["ID"] == int(c):
                 res += city["name"] + "\n"
                 break
 
-        office_list = self.old_get_work_region_city_office_list(r, c)
+        office_list = self._old_get_work_region_city_office_list(r, c)
 
         for office in office_list:
             if office["ID"] == int(o):
@@ -587,6 +587,6 @@ if __name__ == "__main__":
 
     bank = SberBank(bank_rec)
 
-    test = bank.decode("142:2656:1393")
+    test = bank.decode("33:2361773:2582")
 
     pass
