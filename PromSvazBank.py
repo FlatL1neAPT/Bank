@@ -5,7 +5,7 @@ import json
 class PromSvazBank(Bank):
 
     def __init__(self, rec):
-        #super().__init__(rec)
+        super().__init__(rec)
 
         try:
             pass
