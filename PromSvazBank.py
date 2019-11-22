@@ -127,7 +127,7 @@ class PromSvazBank(Bank):
             data = {
                 "inn": org_data["ИНН"],
                 "name": org_data["Название"],
-                "need_s_schet": True,
+                "need_s_schet": False,
                 "need_r_schet": True,
                 "fio": "{} {} {}".format(org_data["Фамилия"], org_data["Имя"], org_data["Отчество"]),
                 "phone": org_data["Телефон"],
