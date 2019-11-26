@@ -130,7 +130,7 @@ class PromSvazBank(Bank):
                 "need_s_schet": False,
                 "need_r_schet": True,
                 "fio": "{} {} {}".format(org_data["Фамилия"], org_data["Имя"], org_data["Отчество"]),
-                "phone": org_data["Телефон"],
+                "phone": org_data["Телефон"].split("|")[0],
                 "city_id": city_id,
                 "email": email,
                 "comment": comment
