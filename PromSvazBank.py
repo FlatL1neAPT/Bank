@@ -124,6 +124,9 @@ class PromSvazBank(Bank):
                 city_id = add_data[1]
                 comment = comment[:start_pos] + comment[end_pos+1:]
 
+            if not email:
+                email = "test@test.ru"
+
             data = {
                 "inn": org_data["ИНН"],
                 "name": org_data["Название"],
