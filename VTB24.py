@@ -104,7 +104,7 @@ class VTB24(Bank):
         body = {
             "inn": org["ИНН"],
             "org_name": org["Название"],
-            "contact_phone": org["Телефон"],
+            "contact_phone": org["Телефон"].split("|")[0],
             "fio": org["Фамилия"] + ' ' + org["Имя"] + ' ' + org["Отчество"],
             "region": region,
             "city": city,
