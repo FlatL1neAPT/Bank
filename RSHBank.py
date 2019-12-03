@@ -1085,6 +1085,9 @@ class RSHBank(Bank):
 
         return res
 
+    def is_multithread_odp(self):
+		return False
+
     def get_work_region_city_list(self, region):
 
         res = []
@@ -1094,5 +1097,3 @@ class RSHBank(Bank):
 
         return res
 
-	def is_multithread_odp(self):
-		return False
