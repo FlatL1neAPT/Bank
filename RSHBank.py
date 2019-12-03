@@ -1093,3 +1093,6 @@ class RSHBank(Bank):
             res.append({'ID': city, 'name': city})
 
         return res
+
+	def is_multithread_odp(self):
+		return False
