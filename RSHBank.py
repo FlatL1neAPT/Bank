@@ -1067,7 +1067,7 @@ class RSHBank(Bank):
 	'г.Переславль-Залесский']
 }
 
-    def is_in_odp_full(self, inn):
+    def is_in_odp_full(self, inn, _phone, _acc_data):
         return self.is_in_odp(inn)
 
     def is_in_odp(self, inn):
