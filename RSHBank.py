@@ -1067,6 +1067,8 @@ class RSHBank(Bank):
 	'г.Переславль-Залесский']
 }
 
+    def is_in_odp_full(self, inn):
+        return self.is_in_odp(inn)
 
     def is_in_odp(self, inn):
         res = requests.post("https://www.rshb.ru/ajax/inncheck/inncheck.php", data="companyinn={}".format(inn))

@@ -32,9 +32,6 @@ class PromSvazBank(Bank):
         self.auth_data["token"] = r["data"]["access_token"]
         self.save_auth_data(json.dumps(self.auth_data))
 
-    def is_in_odp_full(self, inn):
-        return self.is_in_odp(inn)
-
     def is_in_odp(self, inn):
 
         #return False
