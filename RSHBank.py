@@ -1108,7 +1108,7 @@ class RSHBank(Bank):
 "&request[utm_term]=" \
 "&request[utm_content]=" \
 "&request[partner_id]={}" \
-"&request[company_inn]=463223132446" \
+"&request[company_inn]={}" \
 "&request[company_name]={}" \
 "&request[client_lname]={}" \
 "&request[client_fname]={}" \
@@ -1129,7 +1129,7 @@ class RSHBank(Bank):
 "&request[partner_name]=" \
 "&request[agreement]=false"
 
-        data = data.format(self.auth_data["id"], org_data["Название"], org_data["Фамилия"], org_data["Имя"],
+        data = data.format(self.auth_data["id"], org_data["ИНН"], org_data["Название"], org_data["Фамилия"], org_data["Имя"],
 						   org_data["Телефон"].split("|")[0], email, region_id, comment,
 						   "{} {}".format(org_data["Фамилия"], org_data["Имя"]))
 
