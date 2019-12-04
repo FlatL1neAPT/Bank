@@ -1097,10 +1097,10 @@ class RSHBank(Bank):
         data = "fill_name=" \
 "&request[form_id]=52" \
 "&request[form_code]=REQUEST_CALL_FORM_SB_RKO" \
-"&request[reklama]=rshb" \
+"&request[reklama]=" \
 "&secret=resrv" \
-"&request[cid]=GA1.2.852960884.1574276512" \
-"&request[ipaddr]=91.232.92.152" \
+"&request[cid]=" \
+"&request[ipaddr]=" \
 "&request[url]=http://www.rshb.ru/promo/smb/rko-partner/" \
 "&request[utm_source]=" \
 "&request[utm_medium]=" \
@@ -1119,23 +1119,25 @@ class RSHBank(Bank):
 "&request[filialcode]=" \
 "&request[chosen_officename]=" \
 "&request[check]=Банковский счет (расчетный)" \
-"&request[checknum]=1" \
-"&request[currencynum]=810" \
-"&request[currencynumnew]=810" \
+"&request[checknum]=" \
+"&request[currencynum]=" \
+"&request[currencynumnew]=" \
 "&request[youare]=" \
 "&request[name]={}" \
 "&request[service_type][]=Расчетно-кассовое обслуживание" \
 "&request[region]=" \
 "&request[partner_name]=" \
-"&request[agreement]=false"
+"&request[agreement]=true"
 
         data = data.format(self.auth_data["id"], org_data["ИНН"], org_data["Название"], org_data["Фамилия"], org_data["Имя"],
 						   org_data["Телефон"].split("|")[0], email, region_id, comment,
 						   "{} {}".format(org_data["Фамилия"], org_data["Имя"]))
 
-        res = requests.post(url, headers={"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"}, data=data.encode())
+        #res = requests.post(url, headers={"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"}, data=data.encode())
 
-        response = json.loads(res.text)
+        #response = json.loads(res.text)
+
+		response = {}
 
         if "status" in response and response["status"] == 'error':
             return [{"error": response["message"]}]
