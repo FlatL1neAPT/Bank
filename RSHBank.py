@@ -1078,6 +1078,70 @@ class RSHBank(Bank):
 
         return False
 
+    def send_org(self, org_data, log):
+
+        comment = org_data["Комментарий"]
+        region_id = ""
+        email = ""
+
+        if comment is not None and comment.find("#ОфисБанка:") != -1:
+            start_pos = comment.find("#ОфисБанка:")
+            end_pos = comment.find("#", start_pos + 1)
+
+            add_data = comment[start_pos + 11:end_pos].split(":")
+            email = add_data[0]
+            region_id = add_data[1]
+            comment = comment[:start_pos] + comment[end_pos + 1:]
+
+        url = "https://www.rshb.ru/ajax/request/form.php"
+        data = "fill_name=" \
+"&request[form_id]=52" \
+"&request[form_code]=REQUEST_CALL_FORM_SB_RKO" \
+"&request[reklama]=rshb" \
+"&secret=resrv" \
+"&request[cid]=GA1.2.852960884.1574276512" \
+"&request[ipaddr]=91.232.92.152" \
+"&request[url]=http://www.rshb.ru/promo/smb/rko-partner/" \
+"&request[utm_source]=" \
+"&request[utm_medium]=" \
+"&request[utm_campaign]=" \
+"&request[utm_term]=" \
+"&request[utm_content]=" \
+"&request[partner_id]={}" \
+"&request[company_inn]=463223132446" \
+"&request[company_name]={}" \
+"&request[client_lname]={}" \
+"&request[client_fname]={}" \
+"&request[phone]={}" \
+"&request[email]={}" \
+"&region-req={}" \
+"&request[comments]={}" \
+"&request[filialcode]=" \
+"&request[chosen_officename]=" \
+"&request[check]=Банковский счет (расчетный)" \
+"&request[checknum]=1" \
+"&request[currencynum]=810" \
+"&request[currencynumnew]=810" \
+"&request[youare]=" \
+"&request[name]={}" \
+"&request[service_type][]=Расчетно-кассовое обслуживание" \
+"&request[region]=" \
+"&request[partner_name]=" \
+"&request[agreement]=false"
+
+        data = data.format(self.auth_data["id"], org_data["Название"], org_data["Фамилия"], org_data["Имя"],
+						   org_data["Телефон"].split("|")[0], email, region_id, comment,
+						   "{} {}".format(org_data["Фамилия"], org_data["Имя"]))
+
+        res = requests.post(url, headers={"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"}, data=data.encode())
+
+        response = json.loads(res.text)
+
+        if "status" in response and response["status"] == 'error':
+            return [{"error": response["message"]}]
+
+        return []
+
     def get_work_region_list(self):
 
         res = []
@@ -1099,3 +1163,6 @@ class RSHBank(Bank):
 
         return res
 
+
+if __name__ == "__main__":
+	test = "fill_name=&request%5Bform_id%5D=52&request%5Bform_code%5D=REQUEST_CALL_FORM_SB_RKO&request%5Breklama%5D=rshb&secret=resrv&request%5Bcid%5D=GA1.2.852960884.1574276512&request%5Bipaddr%5D=91.232.92.152&request%5Burl%5D=http%3A%2F%2Fwww.rshb.ru%2Fpromo%2Fsmb%2Frko-partner%2F&request%5Butm_source%5D=&request%5Butm_medium%5D=&request%5Butm_campaign%5D=&request%5Butm_term%5D=&request%5Butm_content%5D=&request%5Bpartner_id%5D=123&request%5Bcompany_inn%5D=463223132446&request%5Bcompany_name%5D=%D0%98%D0%9F+%D0%9F%D0%95%D0%A7%D0%95%D0%9D%D0%95%D0%92%D0%90+%D0%A1%D0%92%D0%95%D0%A2%D0%9B%D0%90%D0%9D%D0%90+%D0%93%D0%95%D0%9D%D0%9D%D0%90%D0%94%D0%98%D0%95%D0%92%D0%9D%D0%90&request%5Bclient_lname%5D=%D0%9F%D0%B5%D1%87%D0%B5%D0%BD%D0%B5%D0%B2%D0%B0&request%5Bclient_fname%5D=%D0%A1%D0%B2%D0%B5%D1%82%D0%BB%D0%B0%D0%BD%D0%B0&request%5Bphone%5D=%2B7+(980)+715-32-59&request%5Bemail%5D=&region-req=%D0%A0%D0%B5%D1%81%D0%BF%D1%83%D0%B1%D0%BB%D0%B8%D0%BA%D0%B0+%D0%90%D0%B4%D1%8B%D0%B3%D0%B5%D1%8F&request%5Bcomments%5D=123&request%5Bfilialcode%5D=%D0%90%D0%B4%D1%8B%D0%B3%D0%B5%D0%B9%D1%81%D0%BA%D0%B8%D0%B9+%D1%84%D0%B8%D0%BB%D0%B8%D0%B0%D0%BB&request%5Bchosen_officename%5D=&request%5Bcheck%5D=%D0%91%D0%B0%D0%BD%D0%BA%D0%BE%D0%B2%D1%81%D0%BA%D0%B8%D0%B9+%D1%81%D1%87%D0%B5%D1%82+(%D1%80%D0%B0%D1%81%D1%87%D0%B5%D1%82%D0%BD%D1%8B%D0%B9)&request%5Bchecknum%5D=1&request%5Bcurrencynum%5D=810&request%5Bcurrencynumnew%5D=810&request%5Byouare%5D=&request%5Bname%5D=%D0%9F%D0%B5%D1%87%D0%B5%D0%BD%D0%B5%D0%B2%D0%B0+%D0%A1%D0%B2%D0%B5%D1%82%D0%BB%D0%B0%D0%BD%D0%B0&request%5Bservice_type%5D%5B%5D=%D0%A0%D0%B0%D1%81%D1%87%D0%B5%D1%82%D0%BD%D0%BE-%D0%BA%D0%B0%D1%81%D1%81%D0%BE%D0%B2%D0%BE%D0%B5+%D0%BE%D0%B1%D1%81%D0%BB%D1%83%D0%B6%D0%B8%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5&request%5Bregion%5D=1621&request%5Bpartner_name%5D=&request%5Bagreement%5D=false"
