@@ -1094,6 +1094,8 @@ class RSHBank(Bank):
             region_name = add_data[2]
             comment = comment[:start_pos] + comment[end_pos + 1:]
 
+        email = ""
+
         url = "https://www.rshb.ru/ajax/request/form.php"
         data = "fill_name=" \
 "&request[form_id]=52" \
