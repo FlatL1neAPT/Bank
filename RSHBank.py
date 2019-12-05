@@ -1091,6 +1091,7 @@ class RSHBank(Bank):
             add_data = comment[start_pos + 11:end_pos].split(":")
             email = add_data[0]
             region_id = add_data[1]
+            region_name = add_data[2]
             comment = comment[:start_pos] + comment[end_pos + 1:]
 
         url = "https://www.rshb.ru/ajax/request/form.php"
@@ -1108,7 +1109,7 @@ class RSHBank(Bank):
 "&request[utm_term]=" \
 "&request[utm_content]=" \
 "&request[partner_id]={}" \
-"&request[company_inn]={}" \
+"&request[inn]={}" \
 "&request[company_name]={}" \
 "&request[client_lname]={}" \
 "&request[client_fname]={}" \
@@ -1125,19 +1126,17 @@ class RSHBank(Bank):
 "&request[youare]=" \
 "&request[name]={}" \
 "&request[service_type][]=Расчетно-кассовое обслуживание" \
-"&request[region]=" \
-"&request[partner_name]=" \
+"&request[region]={}" \
+"&request[partner_name]=ООО «Профит Сейл»_н" \
 "&request[agreement]=true"
 
         data = data.format(self.auth_data["id"], org_data["ИНН"], org_data["Название"], org_data["Фамилия"], org_data["Имя"],
-						   org_data["Телефон"].split("|")[0], email, region_id, comment,
-						   "{} {}".format(org_data["Фамилия"], org_data["Имя"]))
+						   org_data["Телефон"].split("|")[0], email, region_name, comment,
+						   "{} {}".format(org_data["Фамилия"], org_data["Имя"]), region_id)
 
-        #res = requests.post(url, headers={"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"}, data=data.encode())
+        res = requests.post(url, headers={"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"}, data=data.encode())
 
-        #response = json.loads(res.text)
-
-		response = {}
+        response = json.loads(res.text)
 
         if "status" in response and response["status"] == 'error':
             return [{"error": response["message"]}]
