@@ -1095,6 +1095,8 @@ class RSHBank(Bank):
             comment = comment[:start_pos] + comment[end_pos + 1:]
 
         email = ""
+        phone = org_data["Телефон"].split("|")[0]
+        phone = "+7 ({}) {}".format(phone[2:5], phone[5:])
 
         url = "https://www.rshb.ru/ajax/request/form.php"
         data = "fill_name=" \
@@ -1133,7 +1135,7 @@ class RSHBank(Bank):
 "&request[agreement]=true"
 
         data = data.format(self.auth_data["id"], org_data["ИНН"], org_data["Название"], org_data["Фамилия"], org_data["Имя"],
-						   org_data["Телефон"].split("|")[0], email, region_name, comment,
+						   phone, email, region_name, comment,
 						   "{} {}".format(org_data["Фамилия"], org_data["Имя"]), region_id)
 
         res = requests.post(url, headers={"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"}, data=data.encode())
