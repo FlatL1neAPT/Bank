@@ -1096,9 +1096,9 @@ class RSHBank(Bank):
 
         email = ""
         phone = org_data["Телефон"].split("|")[0]
-        phone = "%2B7 ({}) {}".format(phone[2:5], phone[5:])
+        phone = "%2B7 ({}) {}-{}-{}".format(phone[2:5], phone[5:8], phone[8:10], phone[10:12])
 
-        url = "https://www.rshb.ru/ajax/request/form.php"
+        url = "http://www.1rshb.ru/ajax/request/form.php"
         data = "fill_name=" \
 "&request[form_id]=52" \
 "&request[form_code]=REQUEST_CALL_FORM_SB_RKO" \
