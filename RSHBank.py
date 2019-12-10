@@ -1073,12 +1073,15 @@ class RSHBank(Bank):
     def is_in_odp(self, inn):
         res = requests.post("https://www.rshb.ru/ajax/inncheck/inncheck.php", data="companyinn={}".format(inn))
 
-        if res.text == '\n"wrong"':
+        if res.text == '\n"wrong"' or res.text == '"wrong"':
             return True
 
         return False
 
     def send_org(self, org_data, log):
+
+        if self.is_in_odp(org_data["ИНН"]):
+            return [{"error": "Организация {} в ОПД по Россельхоз Банку".format(org_data["ИНН"])}]
 
         comment = org_data["Комментарий"]
         region_id = ""
