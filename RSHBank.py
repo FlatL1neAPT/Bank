@@ -1071,12 +1071,13 @@ class RSHBank(Bank):
         return self.is_in_odp(inn)
 
     def is_in_odp(self, inn):
-        res = requests.post("https://www.rshb.ru/ajax/inncheck/inncheck.php", data="companyinn={}".format(inn))
+		res = requests.post("https://www.rshb.ru/ajax/inncheck/inncheck.php", data="companyinn={}".format(inn),
+							headers={"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"})
 
-        if res.text == '\n"wrong"' or res.text == '"wrong"':
-            return True
+		if res.text == '\n"wrong"' or res.text == '"wrong"':
+			return False
 
-        return False
+		return False
 
     def send_org(self, org_data, log):
 
