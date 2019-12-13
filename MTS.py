@@ -786,7 +786,7 @@ class MTS(Bank):
         res = json.loads(r.text)
         return res["_embedded"]["items"]
 
-    def send_org(self, org, log):
+    def send_org(self, org, log, project_params=None):
 
         city = None
         office = None

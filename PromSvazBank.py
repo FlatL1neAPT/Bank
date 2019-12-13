@@ -104,7 +104,7 @@ class PromSvazBank(Bank):
             self.auth_data["token"] = None
             return impl()
 
-    def send_org(self, org_data, log):
+    def send_org(self, org_data, log, project_params=None):
 
         def impl():
             self.auth()

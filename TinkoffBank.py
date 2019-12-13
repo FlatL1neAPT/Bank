@@ -203,7 +203,7 @@ class TinkoffBank(Bank):
     def odp_delay(self):
         pass
 
-    def send_org(self, org, log, product="РКО"):
+    def send_org(self, org, log, product="РКО", project_params=None):
 
         params = None
 

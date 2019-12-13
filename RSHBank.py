@@ -1079,10 +1079,20 @@ class RSHBank(Bank):
 
         return False
 
-    def send_org(self, org_data, log):
+    def send_org(self, org_data, log, project_params):
 
         if self.is_in_odp(org_data["ИНН"]):
             return [{"error": "Организация {} в ОПД по Россельхоз Банку".format(org_data["ИНН"])}]
+
+        bank_id = self.auth_data["id"]
+        bank_name = "ООО «Профит Сейл»_н"
+
+        if "Банк" in project_params:
+            try:
+                bank_id = project_params["Банк"]["id"]
+                bank_name = project_params["Банк"]["name"]
+            except:
+                pass
 
         comment = org_data["Комментарий"]
         region_id = ""
@@ -1135,12 +1145,12 @@ class RSHBank(Bank):
 "&request[name]={}" \
 "&request[service_type][]=Расчетно-кассовое обслуживание" \
 "&request[region]={}" \
-"&request[partner_name]=ООО «Профит Сейл»_н" \
+"&request[partner_name]={}" \
 "&request[agreement]=true"
 
-        data = data.format(self.auth_data["id"], org_data["ИНН"], org_data["Название"], org_data["Фамилия"], org_data["Имя"],
+        data = data.format(bank_id, org_data["ИНН"], org_data["Название"], org_data["Фамилия"], org_data["Имя"],
 						   phone, email, region_name, comment,
-						   "{} {}".format(org_data["Фамилия"], org_data["Имя"]), region_id)
+						   "{} {}".format(org_data["Фамилия"], org_data["Имя"]), region_id, bank_name)
 
         res = requests.post(url, headers={"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"}, data=data.encode())
 
