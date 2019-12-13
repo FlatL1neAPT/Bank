@@ -36,6 +36,9 @@ class Bank:
         for region_rec in region_list:
             self.regions.append(Region(region_rec))
 
+    def set_auth_data(self, data):
+        pass
+
     def get_acc_data(self, id):
 
         acc_list = []
