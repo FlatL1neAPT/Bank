@@ -1075,7 +1075,7 @@ class RSHBank(Bank):
 							headers={"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"})
 
         if res.text == '\n"wrong"' or res.text == '"wrong"':
-            return False
+            return True
 
         return False
 
