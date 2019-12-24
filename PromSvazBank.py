@@ -16,7 +16,7 @@ class PromSvazBank(Bank):
             raise e
 
         #self.url = "http://api.dev.rko.psb.finstar.online/fo/v1.0.0/"
-        self.url = "https://api.finstar.online/fo/v1.0.0/"
+        self.url = "https://api.lk.psbank.ru/fo/v1.0.0/"
 
     def auth(self):
 
